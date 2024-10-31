@@ -27,11 +27,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           cache: 'pnpm'
-          node-version: 18
+          node-version: 20
 
       - name: CI
         run: |
-          pnpm install --no-frozen-lockfile
+          pnpm install
           pnpm run build:page
       - name: Create Release Pull Request or Publish to npm
         id: changesets
