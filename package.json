@@ -16,6 +16,10 @@
     "changeset:version": "changeset version",
     "changeset:release": "changeset publish --registry https://registry.npmjs.org"
   },
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	},
   "gitHooks": {
     "pre-commit": "lint-staged",
     "commit-msg": "node scripts/verifyCommit.js"
