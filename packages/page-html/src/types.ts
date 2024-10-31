@@ -1,99 +1,112 @@
 import type { HtmlTagDescriptor } from 'vite'
-import { Options as _EjsOptions } from 'ejs'
 import type { Options as MinifyOptions } from 'html-minifier-terser'
+import type { Options as EjsOptions } from 'ejs'
 
-export type EjsOptions = _EjsOptions
+/** plugin configurations */
+export interface PageOptions {
+	/**
+	 * @description page configuration.
+	 * @summary If string, the value is the page path
+	 * @type {string | { path: PageConfig }}
+	 */
+	page?: string | Record<string, string | PageConfig>
+
+	/**
+	 * @description page entry.
+	 * @type {string}
+	 */
+	entry?: string
+
+	/**
+	 * @description page template. as global html
+	 * @type {string}
+	 */
+	template?: string
+
+	/**
+	 * @description page title.
+	 * @summary when using title option, template title tag needs to be <title><%= pageHtmlVitePlugin.title %></title>
+	 * @type {string}
+	 */
+	title?: string
+
+	/**
+	 * @description page data.
+	 * @deprecated use inject.data instead.
+	 * @type {Record<string, any>}
+	 */
+	data?: Record<string, any>
+
+	/**
+	 * @description minify html.
+	 * @type {boolean | MinifyOptions}
+	 * @default true
+	 */
+	minify?: boolean | MinifyOptions
+
+	/**
+	 * @description ejs options.
+	 * @type {EjsOptions}
+	 * @see https://github.com/mde/ejs#options
+	 */
+	ejsOptions?: EjsOptions
+
+	/**
+	 * @description inject data and tags to html.
+	 * @type {InjectOptions}
+	 */
+	inject?: InjectOptions
+}
+
+/** page configurations */
+export interface PageConfig {
+	/**
+	 * @description page entry.
+	 * @type {string}
+	 * @example 'src/main.ts'
+	 */
+	entry: string
+
+	/**
+	 * @description page template
+	 * @type {string}
+	 * @example 'index.html'
+	 */
+	template?: string
+
+	/**
+	 * @description page title.
+	 * @type {string}
+	 */
+	title?: string
+
+	/**
+	 * @description inject data and tags to html.
+	 * @type {InjectOptions}
+	 */
+	inject?: InjectOptions
+}
+
+/** SAP data */
+export interface PageItem extends Required<PageConfig> {
+	path: string
+	template: string
+	minify?: boolean | MinifyOptions
+	ejsOptions?: EjsOptions
+	inject: InjectOptions
+}
+
+/** MPA data */
+export interface Pages {
+	[key: string]: PageItem
+}
 
 interface InjectOptions {
-  /**
-   * @see https://cn.vitejs.dev/guide/api-plugin.html#vite-specific-hooks
-   */
-  tags?: HtmlTagDescriptor[],
-  
-  /**
-   * @description use for template.
-   */
-   data?: Record<string, any>
-}
-
-// single page config
-export interface PageConfig {
-  entry: string
-  template?: string
-  title?: string
-  minify?: boolean
-  ejsOptions?: EjsOptions
-  inject?: InjectOptions
-  [key: string]: any // ⚠️ warning: 新版本待移除, 兼容data
-}
-
-export interface PageData extends PageConfig {
-  path: string
-  template: string
-  inject: InjectOptions
-}
-
-export interface PagesData {
-  [key: string]: PageData
-}
-
-export interface EjsExtendData {
-  BASE_URL?: string
-  MODE?: string
-  DEV?: boolean
-  PROD?: boolean
-  [key: keyof any]: any
-}
-
-export interface PagesOptions {
-  /**
-   * @description page configuration.
-   * @summary If string, the value is the page path
-   * @type {string | { path: PageConfig }}
-   */
-  page?:
-    | string
-    | {
-        [key: string]: string | PageConfig
-      }
-
-  /**
-   * @description The entry file path
-   * @type {string}
-   */
-  entry?: string
-
-  /**
-   * @description Specify the folder path of the html file. as global html
-   * @type {string}
-   */
-  template?: string
-
-  /**
-   * @description page title. as global title
-   * @summary when using title option, template title tag needs to be <title><%= pageHtmlVitePlugin.title %></title>
-   * @type {string}
-   */
-  title?: string
-
-  /**
-   * @description compressed html file?
-   * @type {boolean}
-   */
-  minify?: boolean | MinifyOptions
-
-  /**
-   * @description esj options configuration
-   * @type {EjsOptions}
-   * @see https://github.com/mde/ejs#options
-   */
-  ejsOptions?: EjsOptions
-
-  /**
-   * @description Data injected into the index.html ejs template
-   */
-  inject?: InjectOptions
-  
-  // ⚠️ warning: 新版本待移除, 兼容 data
-  [key: string]: any
+	/** use for template */
+	data?: Record<string, any>
+	/**
+	 * html tags to inject
+	 * @see https://cn.vitejs.dev/guide/api-plugin.html#vite-specific-hooks
+	 */
+	tags?: HtmlTagDescriptor[]
 }

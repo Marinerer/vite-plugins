@@ -1,120 +1,100 @@
-import type { ResolvedConfig, PluginOption } from 'vite'
+import * as vite from 'vite'
+import type { Plugin, ResolvedConfig, ConfigEnv } from 'vite'
 import historyFallback from 'connect-history-api-fallback'
+import { PageOptions, PageItem } from './types'
+import { cleanUrl, cleanPageUrl, errlog } from './utils/util'
+import { createPage, compileHtml, createRewrites } from './utils/core'
+import { createVirtualHtml, removeVirtualHtml } from './utils/file'
 
-import { PagesOptions, PageData, PagesData } from './types'
-import {
-  errlog,
-  createPage,
-  createRewrites,
-  compileHtml,
-  cleanUrl,
-  cleanPageUrl,
-  createVirtualHtml,
-  removeVirtualHtml
-} from './utils'
-import { name as PLUGIN_NAME } from '../package.json'
+import { PLUGIN_NAME } from './const'
 
-type PageListItem = {
-  name: string
-  path: string
-  template: string
-}
+const viteMajorVersion = vite?.version ? Number(vite.version.split('.')[0]) : 2
 
-export function createPageHtmlPlugin(
-  pluginOptions: PagesOptions = {}
-): PluginOption {
-  let pageInput: Record<string, string> = {}
-  let pageList: PageListItem[] = []
-  let viteConfig: ResolvedConfig
-  // EJS render
-  let renderHtml: (html: string, data?: PageData) => string | Promise<string>
-  // 创建的临时入口 html
-  let needRemoveVirtualHtml: string[]
+export function createPageHtmlPlugin(pluginOptions: PageOptions = {}): Plugin {
+	let viteConfig: ResolvedConfig
+	let renderHtml: (html: string, data?: PageItem) => Promise<string>
+	const pageInput: Record<string, string> = {}
+	// 创建的临时入口html
+	let needRemoveVirtualHtml: string[] = []
+	const pages = createPage(pluginOptions)
+	// 兼容旧版本的transformIndexHtml
+	const transformIndexHtmlHandler = async (html, ctx) => {
+		try {
+			const pageUrl =
+				cleanPageUrl(cleanUrl(decodeURIComponent(ctx.originalUrl ?? ctx.path))) || 'index'
+			const pageData = pages[pageUrl] || pages[`${pageUrl}/index`]
+			if (pageData) {
+				const _html = await renderHtml(html, pageData)
+				return {
+					html: _html,
+					tags: pageData.inject.tags,
+				}
+			}
 
-  const pages: PagesData = createPage(pluginOptions)
+			throw new Error(`${ctx.originalUrl ?? ctx.path} not found!`)
+		} catch (e: any) {
+			errlog(e.message)
+			return e.message
+		}
+	}
 
-  return {
-    name: PLUGIN_NAME,
-    enforce: 'pre',
-    async config(config, { command }) {
-      Object.keys(pages).forEach(name => {
-        const current: PageData = pages[name]
-        const template = command === 'build' ? `${current.path}.html` : current.template
-        pageInput[name] = template
-        pageList.push({ name, path: current.path, template: template })
-      })
+	return {
+		name: PLUGIN_NAME,
+		enforce: 'pre' as const,
 
-      if (!config.build?.rollupOptions?.input) {
-        return { build: { rollupOptions: { input: pageInput } } }
-      } else {
-        config.build.rollupOptions.input = pageInput
-      }
-    },
+		async config(config, { command }: ConfigEnv) {
+			Object.entries(pages).forEach(([name, current]) => {
+				const template = command === 'build' ? `${current.path}.html` : current.template
+				pageInput[name] = template
+			})
 
-    async configResolved(resolvedConfig) {
-      viteConfig = resolvedConfig
+			if (!config.build?.rollupOptions?.input) {
+				return { build: { rollupOptions: { input: pageInput } } }
+			}
 
-      if (resolvedConfig.command === 'build') {
-        needRemoveVirtualHtml = await createVirtualHtml(pages, resolvedConfig.root)
-      }
+			config.build.rollupOptions.input = pageInput
+		},
 
-      // resolvedConfig.env = { BASE_URL, MODE, DEV, PROD }
-      renderHtml = compileHtml(
-        pluginOptions.ejsOptions,
-        { ...resolvedConfig.env },
-        resolvedConfig
-      )
-    },
+		async configResolved(resolvedConfig) {
+			viteConfig = resolvedConfig
 
-    configureServer(server) {
-      // @description rewrite request url
-      // @see https://github.com/vitejs/vite/blob/main/packages/vite/src/node/server/middlewares/htmlFallback.ts
-      server.middlewares.use(
-        historyFallback({
-          verbose: !!process.env.DEBUG && process.env.DEBUG !== 'false',
-          disableDotRule: undefined,
-          htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
-          rewrites: createRewrites(pages, viteConfig.base ?? '/')
-        })
-      )
-    },
+			if (resolvedConfig.command === 'build') {
+				needRemoveVirtualHtml = await createVirtualHtml(pages, resolvedConfig.root)
+			}
 
-    transformIndexHtml: {
-      enforce: 'pre',
-      async transform(html: string, ctx) {
-        try {
-          // 页面路径, (originalUrl: 'serve模式', path: 'build模式')
-          const pageUrl =
-            cleanPageUrl(
-              cleanUrl(decodeURIComponent(ctx.originalUrl ?? ctx.path))
-            ) || 'index'
-          // url 完全匹配 及 过滤 `/index`
-          const current = pageList.find(
-            item => item.path === pageUrl || item.path === `${pageUrl}/index`
-          )
-          if (current) {
-            const pageData = pages[current.name]
-            const _html = await renderHtml(html, pageData)
-            const { tags = [] } = pageData.inject
-            return {
-              html: _html,
-              tags
-            }
-          } else {
-            throw Error(`${ctx.originalUrl ?? ctx.path} not found!`)
-          }
-        } catch (e) {
-          const msg = (<Error>e).message
-          errlog(msg)
-          return msg
-        }
-      }
-    },
+			renderHtml = await compileHtml(
+				pluginOptions.ejsOptions,
+				{ ...resolvedConfig.env },
+				resolvedConfig
+			)
+		},
 
-    closeBundle() {
-      if (needRemoveVirtualHtml.length > 0) {
-        removeVirtualHtml(needRemoveVirtualHtml)
-      }
-    }
-  }
+		configureServer(server) {
+			server.middlewares.use(
+				historyFallback({
+					verbose: !!process.env.DEBUG && process.env.DEBUG !== 'false',
+					disableDotRule: undefined,
+					htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
+					rewrites: createRewrites(pages, viteConfig.base ?? '/'),
+				})
+			)
+		},
+
+		transformIndexHtml:
+			viteMajorVersion < 5
+				? {
+						enforce: 'pre' as const,
+						transform: transformIndexHtmlHandler,
+				  }
+				: {
+						order: 'pre' as const,
+						handler: transformIndexHtmlHandler,
+				  },
+
+		closeBundle() {
+			if (needRemoveVirtualHtml.length) {
+				removeVirtualHtml(needRemoveVirtualHtml)
+			}
+		},
+	}
 }

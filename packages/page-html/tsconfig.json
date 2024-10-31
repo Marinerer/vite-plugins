@@ -4,6 +4,6 @@
     "baseUrl": ".",
     "outDir": "dist",
     "sourceMap": false,
-    "target": "es2017"
+    "target": "ES2020"
   }
 }
