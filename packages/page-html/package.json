@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-page-html",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "A simple and flexible Vite plugin for processing html, Support EJS and multi-page. 灵活处理html的Vite插件，支持EJS和多页应用。",
   "type": "module",
   "types": "./dist/index.d.ts",
