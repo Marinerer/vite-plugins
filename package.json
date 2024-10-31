@@ -2,21 +2,20 @@
   "name": "vite-plugins",
   "private": true,
   "version": "0.0.1",
+  "type": "module",
   "description": "vite.js plugins",
   "keywords": [
     "vite",
     "plugin"
   ],
-  "packageManager": "pnpm@7.9.4",
+  "packageManager": "pnpm@8.15.5",
   "scripts": {
     "preinstall": "node scripts/preinstall",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build:page": "pnpm --filter vite-plugin-page-html run build",
     "build:minify": "pnpm --filter vite-plugin-minify-html run build",
-    "vue2": "pnpm --filter vue2 run dev",
-    "vue": "pnpm --filter vue run dev",
-    "react": "pnpm --filter react run dev",
-    "svelte": "pnpm --filter svelte run dev"
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:release": "changeset publish --registry https://registry.npmjs.org"
   },
   "gitHooks": {
     "pre-commit": "lint-staged",
@@ -32,29 +31,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Meqn/vite-plugins.git"
+    "url": "git+https://github.com/Marinerer/vite-plugins.git"
   },
   "author": "Mervin <mengqing723@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Meqn/vite-plugins/issues"
+    "url": "https://github.com/Marinerer/vite-plugins/issues"
   },
-  "homepage": "https://github.com/Meqn/vite-plugins#readme",
+  "homepage": "https://github.com/Marinerer/vite-plugins#readme",
   "devDependencies": {
-    "@types/connect-history-api-fallback": "^1.3.5",
-    "@types/ejs": "^3.1.1",
-    "@types/fs-extra": "^9.0.13",
-    "@types/html-minifier-terser": "^7.0.0",
-    "@types/lodash": "^4.14.185",
-    "@types/lodash-es": "^4.17.6",
-    "@types/node": "^18.7.18",
-    "chalk": "4.1.2",
-    "lint-staged": "^13.0.3",
-    "prettier": "^2.7.1",
-    "rimraf": "^3.0.2",
-    "tsup": "^6.2.3",
-    "typescript": "^4.8.3",
-    "vite": "^3.1.3",
-    "yorkie": "^2.0.0"
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.27.9",
+    "@types/node": "^22.8.5",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
   }
 }
