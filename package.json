@@ -10,7 +10,6 @@
   ],
   "packageManager": "pnpm@8.15.5",
   "scripts": {
-    "preinstall": "node scripts/preinstall",
     "build:page": "pnpm --filter vite-plugin-page-html run build",
     "build:minify": "pnpm --filter vite-plugin-minify-html run build",
     "changeset": "changeset",
