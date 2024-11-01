@@ -1,11 +1,11 @@
 import ejs from 'ejs'
 import { resolve } from 'pathe'
 import { ResolvedConfig } from 'vite'
-import { Pages, PageConfig, PageOptions, PageItem } from '../types'
+import { Pages, PageOptions, PageItem } from '../types'
 import { errlog, cleanPageUrl } from './util'
 import { bodyInjectRE, scriptRE } from '../const'
 
-type HistoryRewrite = { from: RegExp; to: any }[]
+type HistoryRewrite = { from: RegExp; to: (context: { parsedUrl: { path: string } }) => string }[]
 
 export async function compileHtml(
 	ejsOptions: ejs.Options = {},
@@ -49,8 +49,7 @@ export async function compileHtml(
  */
 export function createPage(options: PageOptions = {}): Pages {
 	const {
-		page = 'index',
-		entry = 'src/main.js',
+		entry,
 		template = 'index.html',
 		title = 'Vite App',
 		data = {},
@@ -60,7 +59,7 @@ export function createPage(options: PageOptions = {}): Pages {
 	} = options
 
 	const defaults: Omit<PageItem, 'path'> = {
-		entry,
+		entry: entry as string,
 		template,
 		title,
 		minify: minify as boolean,
@@ -71,6 +70,7 @@ export function createPage(options: PageOptions = {}): Pages {
 		},
 	}
 
+	const page = options.page || 'index'
 	const pages: Pages = {}
 
 	// 1. 单页面
@@ -104,33 +104,45 @@ export function createPage(options: PageOptions = {}): Pages {
 	return pages
 }
 
-export function createRewrites(pages: Pages, baseUrl: string): HistoryRewrite {
+/**
+ * 生成重写规则，并过滤代理规则
+ */
+function createRewrite(reg: string, page: PageItem, baseUrl: string, proxyKeys: string[]) {
+	return {
+		from: new RegExp(`^/${reg}$`, 'i'),
+		to: ({ parsedUrl }) => {
+			const pathname = parsedUrl.path
+			const template = resolve(baseUrl, page.template)
+			const isProxyPath = proxyKeys.some((key) => pathname.startsWith(resolve(baseUrl, key)))
+			return isProxyPath ? pathname : template
+		},
+	}
+}
+
+/**
+ * 生成重写规则
+ */
+export function createRewrites(pages: Pages, viteConfig: ResolvedConfig): HistoryRewrite {
 	const rewrites: HistoryRewrite = []
 	const indexReg = /(\S+)(\/index\/?)$/
+	const baseUrl = viteConfig.base ?? '/'
+	const proxyKeys = Object.keys(viteConfig.server?.proxy ?? {})
 
 	Object.entries(pages).forEach(([_, page]) => {
 		// 1. 支持 `xxx`, `xxx/xxx`, `xxx[?/xxx].html`, `xxx[?/index.html]` 请求
-		rewrites.push({
-			from: new RegExp(`^/${page.path}((/)|(\\.html?)|(/index\\.html?))?$`, 'i'),
-			to: ({ parsedUrl }) => resolve(baseUrl, page.template),
-		})
+		// `^/${page.path}((/)|(\\.html?)|(/index\\.html?))?$`
+		rewrites.push(
+			createRewrite(`${page.path}((/)|(\\.html?)|(/index\\.html?))?`, page, baseUrl, proxyKeys)
+		)
 		// 2. 支持 `xxx[?/xxx]/index` 通过 `xxx[?/xxx]` 请求
 		if (indexReg.test(page.path)) {
 			const _path = page.path.replace(indexReg, '$1')
-			rewrites.push({
-				from: new RegExp(`^/${_path}(/)?$`, 'i'),
-				to: ({ parsedUrl }) => resolve(baseUrl, page.template),
-			})
+			// `^/${_path}(/)?$`
+			rewrites.push(createRewrite(`${_path}(/)?`, page, baseUrl, proxyKeys))
 		}
 	})
 	// 3. 支持 `/` 请求
-	rewrites.push({
-		from: /^\/$/,
-		to: ({ parsedUrl }) => {
-			const page = pages['index']
-			return page ? resolve(baseUrl, page.template) : '/'
-		},
-	})
+	rewrites.push(createRewrite('', pages['index'] ?? {}, baseUrl, proxyKeys))
 
 	return rewrites
 }

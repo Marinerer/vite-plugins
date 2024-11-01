@@ -29,7 +29,7 @@ export function createMinifyHtmlPlugin({ minify }: PageOptions = {}): Plugin {
 	return {
 		name: 'vite-plugin-minify-html',
 		enforce: 'post' as const,
-		apply: 'build' as const,
+		// apply: 'build' as const,
 		async generateBundle(_, outputBundle) {
 			if (minify) {
 				for (const bundle of Object.values(outputBundle)) {

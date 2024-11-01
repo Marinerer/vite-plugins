@@ -1,14 +1,11 @@
-import * as vite from 'vite'
 import type { Plugin, ResolvedConfig, ConfigEnv } from 'vite'
 import historyFallback from 'connect-history-api-fallback'
 import { PageOptions, PageItem } from './types'
-import { cleanUrl, cleanPageUrl, errlog } from './utils/util'
+import { cleanUrl, cleanPageUrl, errlog, getViteVersion } from './utils/util'
 import { createPage, compileHtml, createRewrites } from './utils/core'
 import { createVirtualHtml, removeVirtualHtml } from './utils/file'
 
 import { PLUGIN_NAME } from './const'
-
-const viteMajorVersion = vite?.version ? Number(vite.version.split('.')[0]) : 2
 
 export function createPageHtmlPlugin(pluginOptions: PageOptions = {}): Plugin {
 	let viteConfig: ResolvedConfig
@@ -20,13 +17,16 @@ export function createPageHtmlPlugin(pluginOptions: PageOptions = {}): Plugin {
 	// 兼容旧版本的transformIndexHtml
 	const transformIndexHtmlHandler = async (html, ctx) => {
 		try {
-			const pageUrl =
-				cleanPageUrl(cleanUrl(decodeURIComponent(ctx.originalUrl ?? ctx.path))) || 'index'
+			let pageUrl = cleanUrl(ctx.originalUrl ?? ctx.path)
+			if (pageUrl.startsWith(viteConfig.base)) {
+				pageUrl = pageUrl.replace(viteConfig.base, '')
+			}
+			pageUrl = cleanPageUrl(pageUrl) || 'index'
 			const pageData = pages[pageUrl] || pages[`${pageUrl}/index`]
 			if (pageData) {
-				const _html = await renderHtml(html, pageData)
+				const htmlContent = await renderHtml(html, pageData)
 				return {
-					html: _html,
+					html: htmlContent,
 					tags: pageData.inject.tags,
 				}
 			}
@@ -44,6 +44,7 @@ export function createPageHtmlPlugin(pluginOptions: PageOptions = {}): Plugin {
 
 		async config(config, { command }: ConfigEnv) {
 			Object.entries(pages).forEach(([name, current]) => {
+				//dev:动态获取入口, build:静态获取入口
 				const template = command === 'build' ? `${current.path}.html` : current.template
 				pageInput[name] = template
 			})
@@ -75,13 +76,13 @@ export function createPageHtmlPlugin(pluginOptions: PageOptions = {}): Plugin {
 					verbose: !!process.env.DEBUG && process.env.DEBUG !== 'false',
 					disableDotRule: undefined,
 					htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
-					rewrites: createRewrites(pages, viteConfig.base ?? '/'),
+					rewrites: createRewrites(pages, viteConfig),
 				})
 			)
 		},
 
 		transformIndexHtml:
-			viteMajorVersion < 5
+			getViteVersion() < 5
 				? {
 						enforce: 'pre' as const,
 						transform: transformIndexHtmlHandler,

@@ -1,8 +1,13 @@
+import * as vite from 'vite'
 import { PLUGIN_NAME } from '../const'
 import { error as errorLog, colors } from 'diy-log'
 
 export function errlog(...args: any[]): void {
 	errorLog(`[${colors.gray(PLUGIN_NAME)}] `, ...args)
+}
+
+export function getViteVersion(): number {
+	return vite?.version ? Number(vite.version.split('.')[0]) : 2
 }
 
 /**
