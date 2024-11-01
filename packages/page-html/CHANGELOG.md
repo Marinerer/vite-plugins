@@ -1,5 +1,12 @@
 # vite-plugin-page-html
 
+## 3.0.1
+
+### Patch Changes 🌟
+
+- fix: Base configuration error in development environment
+- docs: Update README
+
 ## 3.0.0
 
 ### Major Changes 🎉
