@@ -1,34 +1,28 @@
 # vite-plugin-page-html
 
-**中文** | [English](https://github.com/Meqn/vite-plugins/blob/main/packages/page-html/README.md)
+**中文** | [English](https://github.com/Marinerer/vite-plugins/blob/main/packages/page-html/README.md)
 
 
-简单灵活的处理html的Vite插件。支持EJS模板语法和多页面配置，可指定html文件目录及访问路径，类似于`vue-cli` 的[pages选项](https://cli.vuejs.org/en/config/#pages) 。
-
-
-> **Examples:** 【[ React ](https://github.com/Meqn/vite-plugins/tree/main/examples/react)】 - 【[ Vue@3 ](https://github.com/Meqn/vite-plugins/tree/main/examples/vue)】 - 【[ Vue@2 ](https://github.com/Meqn/vite-plugins/tree/main/examples/vue2)】 - 【[ Svelte ](https://github.com/Meqn/vite-plugins/tree/main/examples/svelte)】
+一个用于处理 HTML 页面的 `Vite` 插件，集成了多页面配置(`MPA`)`、EJS` 模板支持和 HTML 压缩功能。其多页面配置方式与 `vue-cli` 的[pages选项](https://cli.vuejs.org/en/config/#pages) 类似。
 
 
 ## Features
 
-* 📚 单页面(SPA)和多页面(MPA)模式
-* 📡 支持页面入口别名 (`自定义访问路径`)
-* 📊 支持自定义 `template`
-* 🔑 支持自定义 `entry`
-* 🗳 支持 Ejs 模板语法
-* 🔗 支持外部文件库引入 (CDN)
-* 🗜 支持HTML文件压缩能力
+📚 - 📚 支持单页面 (SPA) 和多页面 (MPA) 模式
+- 📡 自定义页面入口别名，轻松配置路径
+- 🔑 支持共用或自定义 `template` 和 `entry`
+- 🗳 支持 `EJS` 模板语法
+- 🗜 提供 `HTML` 文件压缩功能
+- 🔗 方便引入外部资源库 (CDN)
 
 
 ## Why ?
 
-虽然 Vite [原生支持多页应用](https://vitejs.dev/guide/build.html#multi-page-app)，但它需要以html作为入口文件，这意味着必须有这些html文件。
+虽然 Vite [原生支持多页应用](https://vitejs.dev/guide/build.html#multi-page-app)，但它需要以`html`作为入口，这意味着必须存在这些html文件。
 
 如果将html文件放置其他目录，那么在访问时需要添加多余的中间目录。与此同时在打包后的文件目录也存在多余的中间目录。
 
 虽然目前也有一些Vite插件能够解决这些问题，但使用后并不能满足我之前的项目，所以便有了这个插件 `vite-plugin-page-html`。
-
-> 补充：由于开发时的目标是多页面的配置，当时未发现 vite-plugin-html 插件。
 
 ## Install
 

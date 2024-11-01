@@ -1,22 +1,18 @@
 # vite-plugin-page-html
 
-**English** | [中文](https://github.com/Meqn/vite-plugins/blob/main/packages/page-html/README.zh_CN.md)
+**English** | [中文](https://github.com/Marinerer/vite-plugins/blob/main/packages/page-html/README.zh_CN.md)
 
-A simple and flexible vite plugin for processing html. Support EJS template syntax and multi-page configuration, can specify html file directory and access URL, Similar to the [pages](https://cli.vuejs.org/config/#pages) option of vue-cli.
-
-
-> **Examples:** 【[ React ](https://github.com/Meqn/vite-plugins/tree/main/examples/react)】 - 【[ Vue@3 ](https://github.com/Meqn/vite-plugins/tree/main/examples/vue)】 - 【[ Vue@2 ](https://github.com/Meqn/vite-plugins/tree/main/examples/vue2)】 - 【[ Svelte ](https://github.com/Meqn/vite-plugins/tree/main/examples/svelte)】
+A simple and flexible Vite plugin for processing HTML pages, integrating multi-page application (MPA) configuration, EJS template support, and HTML compression. The MPA configuration is similar to the pages option in [vue-cli]((https://cli.vuejs.org/en/config/#pages)).
 
 
 ## Features
 
-* 📚 Multi-page/Single-page application support
-* 📡 Html entry alias (custom url)
-* 📊 Support custom `template`
-* 🔑 Support custom `entry`
-* 🗳 EJS template capability
-* 🔗 External library import (CDN)
-* 🗜 HTML compression capability
+- 📚 `SPA` and `MPA` modes
+- 📡 Customizable page alias
+- 🔑 Shared or custom `template` and `entry`
+- 🗳 `EJS` template syntax support
+- 🗜 HTML file compression for faster loading
+- 🔗 Easy inclusion CDN resources
 
 ## Why ?
 
@@ -25,8 +21,6 @@ Although `Vite` supports multi-page applications natively, it requires html as e
 If you put html in other directory, you need to add useless directories when accessing. There are also useless directories after build.
 
 Although there are plug-ins that can solve these problems, but after using it, it can not satisfy my project, so I developed this plug-in `vite-plugin-page-html`.
-
-> Added: The vite-plugin-html plugin was not found while developing.
 
 ## Install
 
