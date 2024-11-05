@@ -1,6 +1,12 @@
-# Vite plugins
-
-Vite 插件库
+<div align="center">
+  <a href="https://vitejs.dev/">
+    <img width="200" height="200" hspace="10" src="https://vitejs.dev/logo.svg" alt="vite logo" />
+  </a>
+  <h1>Vite plugins</h1>
+  <p>
+    Developing vite plugins.
+  </p>
+</div>
 
 
 
@@ -8,17 +14,16 @@ Vite 插件库
 
 [English](./packages/page-html/README.md) | [中文](./packages/page-html/README.zh_CN.md)
 
-A simple and flexible vite plugin for processing html. Support EJS template syntax and multi-page configuration, can specify html file directory and access URL, Similar to the [pages](https://cli.vuejs.org/config/#pages) option of vue-cli.
+A simple and flexible Vite plugin for processing HTML pages, integrating multi-page application (MPA) configuration, EJS template support, and HTML compression. The MPA configuration is similar to the pages option in [vue-cli]((https://cli.vuejs.org/en/config/#pages)).
 
-简单灵活的处理html的Vite插件。支持EJS模板语法和多页面配置，可指定html文件目录及访问路径，类似于`vue-cli` 的[pages选项](https://cli.vuejs.org/en/config/#pages) 。
+一个用于处理 HTML 页面的 `Vite` 插件，集成了多页面配置(`MPA`)`、EJS` 模板支持和 HTML 压缩功能。其多页面配置方式与 `vue-cli` 的[pages选项](https://cli.vuejs.org/en/config/#pages) 类似。
 
 
-### features
+### Features
 
-* 📚 Multi-page/Single-page application support
-* 📡 Html entry alias (custom url)
-* 📊 Support custom `template`
-* 🔑 Support custom `entry`
-* 🗳 EJS template capability
-* 🔗 External library import (CDN)
-* 🗜 HTML compression capability
+- 📚 `SPA` and `MPA` modes
+- 📡 Customizable page alias
+- 🔑 Shared or custom `template` and `entry`
+- 🗳 `EJS` template syntax support
+- 🗜 HTML file compression for faster loading
+- 🔗 Easy inclusion CDN resources
