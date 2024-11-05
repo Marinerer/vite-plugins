@@ -1,56 +1,58 @@
 {
-  "name": "vite-plugins",
-  "private": true,
-  "version": "0.0.1",
-  "type": "module",
-  "description": "vite.js plugins",
-  "keywords": [
-    "vite",
-    "plugin"
-  ],
-  "packageManager": "pnpm@8.15.5",
-  "scripts": {
-    "build:page": "pnpm --filter vite-plugin-page-html run build",
-    "build:minify": "pnpm --filter vite-plugin-minify-html run build",
-    "changeset": "changeset",
-    "changeset:version": "changeset version",
-    "changeset:release": "changeset publish --registry https://registry.npmjs.org"
-  },
+	"name": "vite-plugins",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"description": "vite.js plugins",
+	"keywords": [
+		"vite",
+		"plugin"
+	],
+	"packageManager": "pnpm@8.15.5",
+	"scripts": {
+		"clean": "rimraf -rf packages/*/dist",
+		"build": "pnpm -r run build",
+		"build:page": "pnpm --filter vite-plugin-page-html run build",
+		"build:minify": "pnpm --filter vite-plugin-minify-html run build",
+		"changeset": "changeset",
+		"changeset:version": "changeset version",
+		"changeset:release": "changeset publish --registry https://registry.npmjs.org"
+	},
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
 	},
-  "gitHooks": {
-    "pre-commit": "lint-staged",
-    "commit-msg": "node scripts/verifyCommit.js"
-  },
-  "lint-staged": {
-    "*.js": [
-      "prettier --write"
-    ],
-    "*.ts": [
-      "prettier --parser=typescript --write"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Marinerer/vite-plugins.git"
-  },
-  "author": "Mervin <mengqing723@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Marinerer/vite-plugins/issues"
-  },
-  "homepage": "https://github.com/Marinerer/vite-plugins#readme",
-  "devDependencies": {
-    "@changesets/changelog-github": "^0.5.0",
-    "@changesets/cli": "^2.27.9",
-    "@types/node": "^22.8.5",
-    "lint-staged": "^15.2.10",
-    "prettier": "^3.3.3",
-    "rimraf": "^6.0.1",
-    "tsup": "^8.3.5",
-    "typescript": "^5.6.3",
-    "vite": "^5.4.10"
-  }
+	"gitHooks": {
+		"pre-commit": "lint-staged",
+		"commit-msg": "node scripts/verifyCommit.js"
+	},
+	"lint-staged": {
+		"*.js": [
+			"prettier --write"
+		],
+		"*.ts": [
+			"prettier --parser=typescript --write"
+		]
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Marinerer/vite-plugins.git"
+	},
+	"author": "Mervin <mengqing723@gmail.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Marinerer/vite-plugins/issues"
+	},
+	"homepage": "https://github.com/Marinerer/vite-plugins#readme",
+	"devDependencies": {
+		"@changesets/changelog-github": "^0.5.0",
+		"@changesets/cli": "^2.27.9",
+		"@types/node": "^22.8.5",
+		"lint-staged": "^15.2.10",
+		"prettier": "^3.3.3",
+		"rimraf": "^6.0.1",
+		"tsup": "^8.3.5",
+		"typescript": "^5.6.3",
+		"vite": "^5.4.10"
+	}
 }
