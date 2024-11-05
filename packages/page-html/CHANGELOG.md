@@ -1,8 +1,10 @@
 # vite-plugin-page-html
 
-## 3.0.2
+## 3.1.0
 
-### Patch Changes 🌟
+### Minor Changes 🚀
+
+- perf: Optimize code structure
 
 - Updated dependencies []:
   - vite-plugin-minify-html@1.0.0

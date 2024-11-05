@@ -1,8 +1,10 @@
 # vite-plugin-vanilla
 
-## 0.0.2
+## 0.1.0
 
-### Patch Changes 🌟
+### Minor Changes 🚀
+
+- feat: Improve basic functions
 
 - Updated dependencies []:
   - vite-plugin-minify-html@1.0.0
