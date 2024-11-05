@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-vanilla",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Vanilla multi-page web development model based on Vite.js.",
   "type": "module",
   "main": "index.js",
