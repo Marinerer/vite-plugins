@@ -31,7 +31,7 @@ jobs:
 
       - name: CI
         run: |
-          pnpm install
+          pnpm install --no-frozen-lockfile
           pnpm run build
       - name: Create Release Pull Request or Publish to npm
         id: changesets
