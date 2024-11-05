@@ -3,19 +3,41 @@
 	"version": "0.0.2",
 	"description": "Vanilla multi-page web development model based on Vite.js.",
 	"type": "module",
-	"main": "index.js",
+	"types": "./dist/index.d.ts",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev": "tsup-node src/index.ts --watch --ignore-watch examples",
 		"build": "rm -rf dist && tsup-node src/index.ts --format esm,cjs --dts"
 	},
+	"engines": {
+		"node": ">=16.0.0"
+	},
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
 	},
-	"keywords": [],
-	"author": "",
+	"homepage": "https://github.com/Marinerer/vite-plugins",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Marinerer/vite-plugins.git"
+	},
+	"author": "Mervin <mengqing723@gmail.com>",
 	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Marinerer/vite-plugins/issues"
+	},
 	"dependencies": {
 		"fast-glob": "^3.3.2",
 		"pathe": "^1.1.2",
