@@ -1,25 +1,25 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "dist",
-    "sourceMap": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "strict": true,
+	"compilerOptions": {
+		"baseUrl": ".",
+		"outDir": "dist",
+		"sourceMap": true,
+		"target": "ES2022",
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"strict": true,
 
-    "allowJs": true,
-    "noImplicitAny": false,
-    "noImplicitThis": false,
+		"allowJs": true,
+		"noImplicitAny": false,
+		"noImplicitThis": false,
 
-    "noUnusedLocals": true,
-    "experimentalDecorators": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "removeComments": false,
-    "jsx": "preserve",
-    "lib": ["ESNext", "DOM"]
-  },
-  "include": ["src", "packages/*/src"],
-  "exclude": ["node_modules", "packages/**/dist", "examples/**/dist", "**/*.spec.ts"]
+		"noUnusedLocals": true,
+		"experimentalDecorators": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"removeComments": false,
+		"jsx": "preserve",
+		"lib": ["ESNext", "DOM"]
+	},
+	"include": ["src", "packages/*/src"],
+	"exclude": ["node_modules", "packages/**/dist", "examples/**/dist", "**/*.spec.ts"]
 }

@@ -86,6 +86,9 @@ importers:
       '@types/html-minifier-terser':
         specifier: ^7.0.2
         version: 7.0.2
+      diy-log:
+        specifier: ^2.5.1
+        version: 2.5.1
       fast-glob:
         specifier: ^3.3.2
         version: 3.3.2
