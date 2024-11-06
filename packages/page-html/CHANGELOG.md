@@ -1,5 +1,11 @@
 # vite-plugin-page-html
 
+## 3.1.2
+
+### Patch Changes 🌟
+
+- fix: Invalid minify configuration issue
+
 ## 3.1.1
 
 ### Patch Changes 🌟
