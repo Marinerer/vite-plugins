@@ -47,5 +47,3 @@ export default function createMinifyPlugin(minify: boolean | MinifyOptions): Plu
 		},
 	}
 }
-
-export { MinifyOptions }
