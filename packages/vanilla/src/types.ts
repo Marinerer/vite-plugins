@@ -1,5 +1,5 @@
 import type { HtmlTagDescriptor } from 'vite'
-import type { MinifyOptions } from 'vite-plugin-minify-html'
+import type { Options as MinifyOptions } from 'html-minifier-terser'
 
 export interface PluginOptions {
 	baseDir?: string

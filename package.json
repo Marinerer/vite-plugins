@@ -14,6 +14,7 @@
 		"build": "pnpm -r run build",
 		"build:page": "pnpm --filter vite-plugin-page-html run build",
 		"build:minify": "pnpm --filter vite-plugin-minify-html run build",
+		"build:vanilla": "pnpm --filter vite-plugin-vanilla run build",
 		"changeset": "changeset",
 		"changeset:version": "changeset version",
 		"changeset:release": "changeset publish --registry https://registry.npmjs.org"

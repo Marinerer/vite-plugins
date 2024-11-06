@@ -1,6 +1,6 @@
 {
 	"name": "vite-plugin-vanilla",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Vanilla multi-page web development model based on Vite.js.",
 	"type": "module",
 	"types": "./dist/index.d.ts",
@@ -39,6 +39,7 @@
 		"url": "https://github.com/Marinerer/vite-plugins/issues"
 	},
 	"dependencies": {
+		"@types/html-minifier-terser": "^7.0.2",
 		"fast-glob": "^3.3.2",
 		"pathe": "^1.1.2",
 		"vite-plugin-minify-html": "workspace:^"
