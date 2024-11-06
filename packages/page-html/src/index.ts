@@ -1,10 +1,13 @@
 import { Plugin } from 'vite'
-import { PageOptions } from './types'
-import { createPageHtmlPlugin } from './pageHtml'
-import createMinifyHtmlPlugin from 'vite-plugin-minify-html'
+import { PluginOptions } from './types'
+import { createPagePlugin } from './pagePlugin'
+import createMinifyPlugin from 'vite-plugin-minify-html'
 
-export default function createPlugin(pluginOptions: PageOptions = {}): Plugin[] {
-	const plugins = [createPageHtmlPlugin(pluginOptions)]
-	if (pluginOptions.minify) plugins.push(createMinifyHtmlPlugin(pluginOptions.minify))
+export default function createPlugin(pluginOptions: PluginOptions = {}): Plugin[] {
+	const opts = Object.assign({ minify: true }, pluginOptions)
+	const plugins = [createPagePlugin(opts)]
+	if (opts.minify) {
+		plugins.push(createMinifyPlugin(opts.minify))
+	}
 	return plugins
 }

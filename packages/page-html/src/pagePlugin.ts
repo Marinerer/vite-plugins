@@ -1,13 +1,13 @@
 import type { Plugin, ResolvedConfig, ConfigEnv } from 'vite'
 import historyFallback from 'connect-history-api-fallback'
-import { PageOptions, PageItem } from './types'
+import { PluginOptions, PageItem } from './types'
 import { cleanUrl, cleanPageUrl, errlog, getViteVersion } from './utils/util'
 import { createPage, compileHtml, createRewrites } from './utils/core'
 import { createVirtualHtml, removeVirtualHtml } from './utils/file'
 
 import { PLUGIN_NAME } from './const'
 
-export function createPageHtmlPlugin(pluginOptions: PageOptions = {}): Plugin {
+export function createPagePlugin(pluginOptions: PluginOptions = {}): Plugin {
 	let viteConfig: ResolvedConfig
 	let renderHtml: (html: string, data?: PageItem) => Promise<string>
 	const pageInput: Record<string, string> = {}
@@ -16,25 +16,21 @@ export function createPageHtmlPlugin(pluginOptions: PageOptions = {}): Plugin {
 	const pages = createPage(pluginOptions)
 	// 兼容旧版本的transformIndexHtml
 	const transformIndexHtmlHandler = async (html, ctx) => {
-		try {
-			let pageUrl = cleanUrl(ctx.originalUrl ?? ctx.path)
-			if (pageUrl.startsWith(viteConfig.base)) {
-				pageUrl = pageUrl.replace(viteConfig.base, '')
+		let pageUrl = cleanUrl(ctx.originalUrl ?? ctx.path)
+		if (pageUrl.startsWith(viteConfig.base)) {
+			pageUrl = pageUrl.replace(viteConfig.base, '')
+		}
+		pageUrl = cleanPageUrl(pageUrl) || 'index'
+		const pageData = pages[pageUrl] || pages[`${pageUrl}/index`]
+		if (pageData) {
+			html = await renderHtml(html, pageData)
+			return {
+				html,
+				tags: pageData.inject.tags,
 			}
-			pageUrl = cleanPageUrl(pageUrl) || 'index'
-			const pageData = pages[pageUrl] || pages[`${pageUrl}/index`]
-			if (pageData) {
-				const htmlContent = await renderHtml(html, pageData)
-				return {
-					html: htmlContent,
-					tags: pageData.inject.tags,
-				}
-			}
-
-			throw new Error(`${ctx.originalUrl ?? ctx.path} not found!`)
-		} catch (e: any) {
-			errlog(e.message)
-			return e.message
+		} else {
+			errlog(`${ctx.originalUrl ?? ctx.path} not found!`)
+			return html
 		}
 	}
 
@@ -86,11 +82,11 @@ export function createPageHtmlPlugin(pluginOptions: PageOptions = {}): Plugin {
 				? {
 						enforce: 'pre' as const,
 						transform: transformIndexHtmlHandler,
-				  }
+					}
 				: {
 						order: 'pre' as const,
 						handler: transformIndexHtmlHandler,
-				  },
+					},
 
 		closeBundle() {
 			if (needRemoveVirtualHtml.length) {

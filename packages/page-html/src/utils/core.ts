@@ -1,7 +1,7 @@
 import ejs from 'ejs'
 import { resolve } from 'pathe'
 import { ResolvedConfig } from 'vite'
-import { Pages, PageOptions, PageItem } from '../types'
+import { Pages, PluginOptions, PageItem } from '../types'
 import { errlog, cleanPageUrl } from './util'
 import { bodyInjectRE, scriptRE } from '../const'
 
@@ -47,7 +47,7 @@ export async function compileHtml(
 /**
  * 通过配置项生成单/多页面数据
  */
-export function createPage(options: PageOptions = {}): Pages {
+export function createPage(options: PluginOptions = {}): Pages {
 	const {
 		entry,
 		template = 'index.html',

@@ -3,7 +3,7 @@ import type { Options as MinifyOptions } from 'html-minifier-terser'
 import type { Options as EjsOptions } from 'ejs'
 
 /** plugin configurations */
-export interface PageOptions {
+export interface PluginOptions {
 	/**
 	 * @description page configuration.
 	 * @summary If string, the value is the page path
