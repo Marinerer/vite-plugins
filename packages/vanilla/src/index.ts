@@ -7,9 +7,10 @@ export default function createPlugin(
 	pagesPatterns: string | string[],
 	options: PluginOptions = {}
 ): Plugin[] {
-	const plugins = [createVanillaPlugin(pagesPatterns, options)]
-	if (options.minify) {
-		plugins.push(createMinifyPlugin(options.minify))
+	const opts = Object.assign({ minify: true }, options)
+	const plugins = [createVanillaPlugin(pagesPatterns, opts)]
+	if (opts.minify) {
+		plugins.push(createMinifyPlugin(opts.minify))
 	}
-  return plugins
+	return plugins
 }

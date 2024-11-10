@@ -1,4 +1,23 @@
+import * as vite from 'vite'
+import { error as errorLog, colors } from 'diy-log'
+
+export const PLUGIN_NAME = 'vite-plugin-vanilla'
 export const htmlRE = /\.htm(l)?$/i
+
+/**
+ * 错误日志
+ * @param args - 要打印的参数
+ */
+export function errlog(...args: any[]): void {
+	errorLog(`[${colors.gray(PLUGIN_NAME)}] `, ...args)
+}
+
+/**
+ * 获取 vite 主版本号
+ */
+export function getViteVersion(): number {
+	return vite?.version ? Number(vite.version.split('.')[0]) : 2
+}
 
 /**
  * 清除 URL 中的 query 和 hash

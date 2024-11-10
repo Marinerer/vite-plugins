@@ -1,19 +1,16 @@
-import type { Plugin } from 'vite'
-import { htmlRE, cleanPageUrl, cleanUrl } from './utils'
-import { PluginOptions, Pages } from './types'
-
+import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'fs/promises'
 import path from 'pathe'
 import glob from 'fast-glob'
+import { PLUGIN_NAME, htmlRE, cleanPageUrl, cleanUrl, errlog, getViteVersion } from './utils'
+import { PluginOptions, Pages } from './types'
 import { moveFile } from './mv'
 
-const PLUGIN_NAME = 'vite-plugin-vanilla'
-
 const defaults: PluginOptions = {
-	baseDir: 'src',
+	base: 'src',
 	// index: 'index.html',
 	minify: true,
-	compiler: undefined,
+	// transform: ()=>{},
 	inject: { data: {}, tags: [] },
 }
 
@@ -22,8 +19,31 @@ export function createVanillaPlugin(
 	options: PluginOptions = {}
 ): Plugin {
 	const htmlPages: Pages = {}
-	let viteConfig
+	let viteConfig: ResolvedConfig
 	const opts = Object.assign({}, defaults, options) as Required<PluginOptions>
+
+	// 处理 transformIndexHtml 选项
+	const transformIndexHtmlHandler = async (html, ctx) => {
+		// console.log('transformIndexHtml : ', ctx.originalUrl, ctx.path)
+		try {
+			if (viteConfig.define) {
+				for (const key in viteConfig.define) {
+					const _value = viteConfig.define[key]
+					html = html.replace(key, typeof _value === 'string' ? JSON.parse(_value) : _value)
+				}
+			}
+			if (typeof opts.transform === 'function') {
+				html = await opts.transform(html, ctx)
+			}
+		} catch (err: unknown) {
+			errlog((<Error>err).message)
+		}
+
+		return {
+			html,
+			tags: opts.inject?.tags || [],
+		}
+	}
 
 	return {
 		name: PLUGIN_NAME,
@@ -43,31 +63,36 @@ export function createVanillaPlugin(
 				files.forEach((file) => {
 					// 过滤非 html 文件
 					if (!htmlRE.test(file)) return
-
 					// 获取绝对路径
 					const absolutePath = path.resolve(file)
 					// 获取相对于 base 目录的路径
 					const relativePath = path.relative(
-						path.join(config?.root ?? process.cwd(), opts.baseDir),
+						path.join(config?.root ?? process.cwd(), opts.base),
 						absolutePath
 					)
-					const fileKey = cleanPageUrl(relativePath)
+					const fileUrl = cleanPageUrl(relativePath)
 
-					input[fileKey] = absolutePath
-					htmlPages[fileKey] = {
+					input[fileUrl] = absolutePath
+					htmlPages[fileUrl] = {
 						file,
-						path: fileKey,
+						path: fileUrl,
 						filePath: absolutePath,
 						output: relativePath,
 					}
 				})
 			})
-			// console.log('input : ', input)
-			// console.log('htmlPages : ', htmlPages)
+
 			return {
+				appType: 'mpa',
 				build: {
 					rollupOptions: {
 						input,
+						output: {
+							chunkFileNames: 'assets/js/[name]-[hash].js',
+							entryFileNames: 'assets/js/[name]-[hash].js',
+							// assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+							...(config?.build?.rollupOptions?.output || {}),
+						},
 					},
 				},
 			}
@@ -76,10 +101,11 @@ export function createVanillaPlugin(
 		configureServer(server) {
 			server.middlewares.use(async (req, res, next) => {
 				let url = cleanUrl(req.url || '')
+				const baseDir = viteConfig.base
 
 				// 移除 base 路径
-				if (url.startsWith(viteConfig.base)) {
-					url = url.replace(viteConfig.base, '')
+				if (baseDir && url.startsWith(baseDir)) {
+					url = url.substring(baseDir.length)
 				}
 
 				// 移除开头的 / 和结尾的 .html
@@ -90,8 +116,8 @@ export function createVanillaPlugin(
 					url = 'index'
 				}
 
-				const reg = /\.htm(l)?/i
-				const pageData = reg.test(req.url || '')
+				const _htmlReg = /\.htm(l)?/i
+				const pageData = _htmlReg.test(req.url || '')
 					? htmlPages[url]
 					: htmlPages[url] || htmlPages[`${url}/index`]
 				// 查找匹配的页面
@@ -100,11 +126,11 @@ export function createVanillaPlugin(
 						const html = await fs.readFile(pageData.filePath, 'utf-8')
 						// 注入 Vite 客户端代码，支持热更新
 						const transformedHtml = await server.transformIndexHtml(url, html)
-
 						res.setHeader('Content-Type', 'text/html')
 						return res.end(transformedHtml)
-					} catch (e) {
-						return next(e)
+					} catch (err: unknown) {
+						errlog((<Error>err).message)
+						return next(err)
 					}
 				}
 
@@ -126,26 +152,23 @@ export function createVanillaPlugin(
 			})
 		},
 
-		transformIndexHtml: {
-			order: 'pre',
-			handler(html, ctx) {
-				// console.log('transformIndexHtml html : ', html)
-				console.log('transformIndexHtml ctx : ', ctx.originalUrl, ctx.path)
-				if (viteConfig.define) {
-					for (const key in viteConfig.define) {
-						const _value = viteConfig.define[key]
-						html = html.replace(key, typeof _value === 'string' ? JSON.parse(_value) : _value)
+		transformIndexHtml:
+			getViteVersion() < 5
+				? {
+						enforce: 'pre' as const,
+						transform: transformIndexHtmlHandler,
 					}
-				}
-				return html
-			},
-		},
+				: {
+						order: 'pre' as const,
+						handler: transformIndexHtmlHandler,
+					},
+
 		closeBundle() {
 			const files = Object.values(htmlPages).reduce((acc, page) => {
 				acc[page.file] = page.output
 				return acc
 			}, {})
-			moveFile(files, 'dist')
+			moveFile(files, viteConfig.build.outDir || 'dist')
 		},
 	}
 }
