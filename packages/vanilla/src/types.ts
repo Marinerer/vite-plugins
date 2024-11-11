@@ -1,5 +1,5 @@
 import type { HtmlTagDescriptor } from 'vite'
-import type { Options as MinifyOptions } from 'html-minifier-terser'
+import type { TerserOptions } from 'vite-plugin-minify-html'
 
 export interface PluginOptions {
 	/**
@@ -12,7 +12,7 @@ export interface PluginOptions {
 	 * @description minify html
 	 * @default true
 	 */
-	minify?: boolean | MinifyOptions
+	minify?: boolean | TerserOptions
 
 	/**
 	 * @description transform html

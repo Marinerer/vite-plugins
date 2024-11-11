@@ -90,7 +90,7 @@ export function createVanillaPlugin(pages: string | string[], options: PluginOpt
 
 		configureServer(server) {
 			server.middlewares.use(async (req, res, next) => {
-				let url = cleanUrl(req.url || '')
+				let url = cleanUrl(req.url ?? req.originalUrl ?? '')
 				const baseDir = viteConfig.base
 
 				// 移除 base 路径
@@ -115,7 +115,11 @@ export function createVanillaPlugin(pages: string | string[], options: PluginOpt
 					try {
 						const html = await fs.readFile(pageData.filePath, 'utf-8')
 						// 注入 Vite 客户端代码，支持热更新
-						const transformedHtml = await server.transformIndexHtml(url, html)
+						const transformedHtml = await server.transformIndexHtml(
+							req.url || `/${url}`,
+							html,
+							req.originalUrl
+						)
 						res.setHeader('Content-Type', 'text/html')
 						return res.end(transformedHtml)
 					} catch (err: unknown) {
@@ -134,7 +138,7 @@ export function createVanillaPlugin(pages: string | string[], options: PluginOpt
 			})
 
 			// 处理热更新
-			watcher.on('change', (file) => {
+			watcher.on('change', (_file) => {
 				server.ws.send({
 					type: 'full-reload',
 					path: '*',
