@@ -13,19 +13,25 @@ npm i -D vite-plugin-minify-html
 ```js
 // vite.config.js
 
-import { minifyHtml } from 'vite-plugin-minify-html'
+import minifyHtml from 'vite-plugin-minify-html'
 
 export default {
-  plugins: [minifyHtml()]
+	plugins: [minifyHtml()],
 }
 ```
 
 ## API
 
 ```typescript
-minifyHtml(options?: boolean | Options)
+minifyHtml(options?: boolean | MinifyOptions)
 ```
+
+For more configurations, see [html-minifier-terser](https://www.npmjs.com/package/html-minifier-terser#options-quick-reference).
 
 ## License
 
 MIT
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a [Pull Request](https://github.com/Marinerer/vite-plugins/pulls).
