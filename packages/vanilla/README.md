@@ -2,7 +2,7 @@
 
 Vanilla multi-page web development model based on `Vite`.
 
-基于 `Vite` 的传统的多页面web开发模式。
+基于 `Vite` 的传统多页面 web 开发模式。
 
 ## Installation
 
@@ -23,7 +23,13 @@ export default defineConfig({
 		}),
 	],
 })
+
+// `/index.html` -> src/pages/index.html
+// `/about/index.html` -> src/pages/about/index.html
 ```
+
+> **Note:**
+> The `'define'` option in the `vite` configuration is statically replaced in the `html`.
 
 ## API
 

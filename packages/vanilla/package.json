@@ -44,7 +44,6 @@
 		"url": "https://github.com/Marinerer/vite-plugins/issues"
 	},
 	"dependencies": {
-		"@types/html-minifier-terser": "^7.0.2",
 		"diy-log": "^2.5.1",
 		"fast-glob": "^3.3.2",
 		"mv-file": "^1.0.4",
