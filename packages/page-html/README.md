@@ -2,8 +2,7 @@
 
 **English** | [中文](https://github.com/Marinerer/vite-plugins/blob/main/packages/page-html/README.zh_CN.md)
 
-A simple and flexible Vite plugin for processing HTML pages, integrating multi-page application (MPA) configuration, EJS template support, and HTML compression. The MPA configuration is similar to the pages option in [vue-cli]((https://cli.vuejs.org/en/config/#pages)).
-
+A simple and flexible Vite plugin for processing HTML pages, integrating multi-page application (MPA) configuration, EJS template support, and HTML compression. The MPA configuration is similar to the pages option in [vue-cli](<(https://cli.vuejs.org/en/config/#pages)>).
 
 ## Features
 
@@ -38,16 +37,16 @@ Add EJS tags to html, such as `index.html`
 > Tip: If `entry` is configured in vite.config.js, you need to delete the script tag in the html.
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title><%= pageHtmlVitePlugin.title %></title>
-    <link rel="shortcut icon" href="<%= BASE_URL %>favicon.ico" type="image/x-icon">
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<title><%= pageHtmlVitePlugin.title %></title>
+		<link rel="shortcut icon" href="<%= BASE_URL %>favicon.ico" type="image/x-icon" />
+	</head>
+	<body>
+		<div id="app"></div>
+	</body>
 </html>
 ```
 
@@ -60,17 +59,16 @@ Single-page application configuration, in `vite.config.js` you can configure acc
 import PageHtml from 'vite-plugin-page-html'
 
 export default defineConfig({
-  plugins: [
-    // ... plugins
-    PageHtml({
-      page: 'index',
-      template: 'src/index.html',
-      title: 'Vue App'
-    })
-  ]
+	plugins: [
+		// ... plugins
+		PageHtml({
+			page: 'index',
+			template: 'src/index.html',
+			title: 'Vue App',
+		}),
+	],
 })
 ```
-
 
 ### MPA
 
@@ -81,24 +79,24 @@ Multi-page application configuration, you can specify the access URL through the
 import PageHtml from 'vite-plugin-page-html'
 
 export default defineConfig({
-  plugins: [
-    // ... plugins
-    PageHtml({
-      template: 'src/index.html',
-      page: {
-        index: 'src/main.js',
-        about: {
-          entry: 'src/about/main.js',
-          title: 'About Page',
-        },
-        'product/list': {
-          entry: 'src/product/main.js',
-          template: 'src/product/index.html', 
-          title: 'Product list'
-        }
-      }
-    })
-  ]
+	plugins: [
+		// ... plugins
+		PageHtml({
+			template: 'src/index.html',
+			page: {
+				index: 'src/main.js',
+				about: {
+					entry: 'src/about/main.js',
+					title: 'About Page',
+				},
+				'product/list': {
+					entry: 'src/product/main.js',
+					template: 'src/product/index.html',
+					title: 'Product list',
+				},
+			},
+		}),
+	],
 })
 ```
 
@@ -123,7 +121,6 @@ The URL structure after the project is constructed is the same as that during de
 │   │   └── list.html
 │   └──
 ```
-
 
 ## Configuration
 
@@ -157,30 +154,28 @@ PageHtml({
 
 > 🚨 **WARNING:** The `entry` file has been written to html, you don't need to write it again.
 
-
-
 ### InjectOptions
 
 ```typescript
 interface InjectOptions {
-  /**
-   * @see https://cn.vitejs.dev/guide/api-plugin.html#vite-specific-hooks
-   */
-  tags?: HtmlTagDescriptor[],
-  /**
-   * page data. Rendering via `ejs` : `<%= pageHtmlVitePlugin.data %>`
-   */
-  data?: Record<string, any>
+	/**
+	 * @see https://cn.vitejs.dev/guide/api-plugin.html#vite-specific-hooks
+	 */
+	tags?: HtmlTagDescriptor[]
+	/**
+	 * page data. Rendering via `ejs` : `<%= pageHtmlVitePlugin.data %>`
+	 */
+	data?: Record<string, any>
 }
 
 interface HtmlTagDescriptor {
-  tag: string
-  attrs?: Record<string, string>
-  children?: string | HtmlTagDescriptor[]
-  /**
-   * 默认： 'head-prepend'
-   */
-  injectTo?: 'head' | 'body' | 'head-prepend' | 'body-prepend'
+	tag: string
+	attrs?: Record<string, string>
+	children?: string | HtmlTagDescriptor[]
+	/**
+	 * 默认： 'head-prepend'
+	 */
+	injectTo?: 'head' | 'body' | 'head-prepend' | 'body-prepend'
 }
 ```
 
@@ -219,8 +214,6 @@ interface HtmlTagDescriptor {
 | `title`    | -            | title. Defaults is global `title`                               |
 | `inject`   | -            | Data injected into HTML. `InjectOptions` [@see](#InjectOptions) |
 
-
-
 ## Externals
 
 When we optimize the project build, we generally introduce commonly used external libraries through external links (CDN). This reduces build times and improves page load times in production.
@@ -234,26 +227,24 @@ Next, we combine `rollup-plugin-external-globals` to implement the production en
 ```html
 <!-- index.html -->
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= pageHtmlVitePlugin.title %></title>
-    
-    <% for (var i in pageHtmlVitePlugin.data.styles) { %>
-    <link rel="stylesheet" href="<%= pageHtmlVitePlugin.data.styles[i] %>">
-    <% } %>
-  </head>
-  <body>
-    <div id="app"></div>
-    <% if(PROD) { %>
-      <% for (var i in pageHtmlVitePlugin.data.scripts) { %>
-      <script src="<%= pageHtmlVitePlugin.data.scripts[i] %>"></script>
-      <% } %>
-    <% } %>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title><%= pageHtmlVitePlugin.title %></title>
+
+		<% for (var i in pageHtmlVitePlugin.data.styles) { %>
+		<link rel="stylesheet" href="<%= pageHtmlVitePlugin.data.styles[i] %>" />
+		<% } %>
+	</head>
+	<body>
+		<div id="app"></div>
+		<% if(PROD) { %> <% for (var i in pageHtmlVitePlugin.data.scripts) { %>
+		<script src="<%= pageHtmlVitePlugin.data.scripts[i] %>"></script>
+		<% } %> <% } %>
+	</body>
 </html>
 ```
 
@@ -307,6 +298,10 @@ export default defineConfig(({ command, mode }) => {
 })
 ```
 
-## Thanks
+## License
 
-[vite.js](https://github.com/vitejs/vite) 、 [ejs]() 、[html-minifier-terser](https://github.com/terser/html-minifier-terser) 
+MIT
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a [Pull Request](https://github.com/Marinerer/vite-plugins/pulls).

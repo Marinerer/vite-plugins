@@ -3,14 +3,18 @@
 	"version": "3.1.2",
 	"description": "A simple and flexible Vite plugin for processing HTML pages, integrating multi-page application (MPA) configuration, EJS template support, and HTML compression.",
 	"type": "module",
+	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"main": "./dist/index.cjs",
-	"module": "./dist/index.js",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"require": "./dist/index.cjs",
-			"import": "./dist/index.js"
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
 		}
 	},
 	"files": [
@@ -18,8 +22,11 @@
 	],
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "tsup-node src/index.ts --watch --ignore-watch examples",
-		"build": "rm -rf dist && tsup-node src/index.ts --format esm,cjs --dts"
+		"dev": "tsup src/index.ts --watch --ignore-watch examples",
+		"build": "tsup src/index.ts --format=esm,cjs --dts --clean"
+	},
+	"engines": {
+		"node": ">=16.0.0"
 	},
 	"keywords": [
 		"vite",
@@ -35,9 +42,6 @@
 		"vite-cdn",
 		"vite-plugin"
 	],
-	"engines": {
-		"node": ">=14.0.0"
-	},
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
@@ -53,8 +57,9 @@
 		"url": "https://github.com/Marinerer/vite-plugins/issues"
 	},
 	"dependencies": {
+		"@types/connect-history-api-fallback": "^1.5.4",
 		"@types/ejs": "^3.1.5",
-		"@types/html-minifier-terser": "^7.0.2",
+		"@types/fs-extra": "^11.0.4",
 		"connect-history-api-fallback": "^2.0.0",
 		"diy-log": "^2.5.1",
 		"ejs": "^3.1.10",
