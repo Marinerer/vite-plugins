@@ -1,10 +1,11 @@
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig, IndexHtmlTransformHook } from 'vite'
 import fs from 'fs/promises'
 import path from 'pathe'
 import glob from 'fast-glob'
 import { PLUGIN_NAME, htmlRE, cleanPageUrl, cleanUrl, errlog, getViteVersion } from './utils'
 import { PluginOptions, Pages } from './types'
-import { moveFile } from './mv'
+// import { moveFile } from './mv'
+import { moveFile } from 'mv-file'
 
 const defaults: PluginOptions = {
 	base: 'src',
@@ -14,17 +15,13 @@ const defaults: PluginOptions = {
 	inject: { data: {}, tags: [] },
 }
 
-export function createVanillaPlugin(
-	pagesPatterns: string | string[],
-	options: PluginOptions = {}
-): Plugin {
+export function createVanillaPlugin(pages: string | string[], options: PluginOptions = {}): Plugin {
 	const htmlPages: Pages = {}
 	let viteConfig: ResolvedConfig
 	const opts = Object.assign({}, defaults, options) as Required<PluginOptions>
 
 	// 处理 transformIndexHtml 选项
-	const transformIndexHtmlHandler = async (html, ctx) => {
-		// console.log('transformIndexHtml : ', ctx.originalUrl, ctx.path)
+	const transformIndexHtmlHandler: IndexHtmlTransformHook = async (html, ctx) => {
 		try {
 			if (viteConfig.define) {
 				for (const key in viteConfig.define) {
@@ -53,8 +50,7 @@ export function createVanillaPlugin(
 		},
 
 		config(config) {
-			// Bug 修复：将 pagesPatterns 转换为数组
-			const patterns = Array.isArray(pagesPatterns) ? pagesPatterns : [pagesPatterns]
+			const patterns = Array.isArray(pages) ? pages : [pages]
 			const input: { [key: string]: string } = {}
 
 			patterns.forEach((pattern) => {
@@ -74,10 +70,10 @@ export function createVanillaPlugin(
 
 					input[fileUrl] = absolutePath
 					htmlPages[fileUrl] = {
-						file,
-						path: fileUrl,
-						filePath: absolutePath,
-						output: relativePath,
+						file, //文件路径
+						path: fileUrl, //访问路径
+						filePath: absolutePath, // 绝对路径
+						output: relativePath, // 输出路径
 					}
 				})
 			})
@@ -87,12 +83,6 @@ export function createVanillaPlugin(
 				build: {
 					rollupOptions: {
 						input,
-						output: {
-							chunkFileNames: 'assets/js/[name]-[hash].js',
-							entryFileNames: 'assets/js/[name]-[hash].js',
-							// assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
-							...(config?.build?.rollupOptions?.output || {}),
-						},
 					},
 				},
 			}
@@ -164,11 +154,13 @@ export function createVanillaPlugin(
 					},
 
 		closeBundle() {
-			const files = Object.values(htmlPages).reduce((acc, page) => {
-				acc[page.file] = page.output
+			const dest = viteConfig.build.outDir || 'dist'
+			const files = Object.values(htmlPages).reduce<Record<string, string>>((acc, page) => {
+				const _src = path.join(dest, page.file)
+				acc[_src] = page.output
 				return acc
 			}, {})
-			moveFile(files, viteConfig.build.outDir || 'dist')
+			moveFile(files, { base: dest, dest, clean: true, force: true })
 		},
 	}
 }

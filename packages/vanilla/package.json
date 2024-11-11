@@ -1,16 +1,20 @@
 {
 	"name": "vite-plugin-vanilla",
 	"version": "0.1.1",
-	"description": "Vanilla multi-page web development model based on Vite.js.",
+	"description": "Vanilla multi-page web development model based on Vite.",
 	"type": "module",
+	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"main": "./dist/index.cjs",
-	"module": "./dist/index.js",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"require": "./dist/index.cjs",
-			"import": "./dist/index.js"
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
 		}
 	},
 	"files": [
@@ -18,20 +22,22 @@
 	],
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "tsup-node src/index.ts --watch --ignore-watch examples",
-		"build": "rm -rf dist && tsup-node src/index.ts --format esm,cjs --dts"
+		"dev": "tsup src/index.ts --watch --ignore-watch examples",
+		"build": "tsup src/index.ts --format=esm,cjs --dts --clean"
 	},
 	"engines": {
 		"node": ">=16.0.0"
 	},
 	"publishConfig": {
 		"access": "public",
-		"registry": "https://registry.npmjs.org/"
+		"registry": "https://registry.npmjs.org/",
+		"provenance": true
 	},
-	"homepage": "https://github.com/Marinerer/vite-plugins",
+	"homepage": "https://github.com/Marinerer/vite-plugins/tree/main/packages/vanilla",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Marinerer/vite-plugins.git"
+		"url": "git+https://github.com/Marinerer/vite-plugins.git",
+		"directory": "packages/vanilla"
 	},
 	"author": "Mervin <mengqing723@gmail.com>",
 	"license": "MIT",
@@ -40,7 +46,9 @@
 	},
 	"dependencies": {
 		"@types/html-minifier-terser": "^7.0.2",
+		"diy-log": "^2.5.1",
 		"fast-glob": "^3.3.2",
+		"mv-file": "^1.0.4",
 		"pathe": "^1.1.2",
 		"vite-plugin-minify-html": "workspace:^"
 	},
