@@ -1,54 +1,58 @@
 {
-  "name": "vite-plugin-minify-html",
-  "version": "1.0.1",
-  "description": "Minify HTML files.",
-  "type": "module",
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsup-node src/index.ts --watch --ignore-watch examples",
-    "build": "rm -rf dist && tsup-node index.ts --format esm,cjs --dts"
-  },
-  "keywords": [
-    "vite",
-    "minify-html",
-    "vite-plugin"
-  ],
-  "engines": {
-    "node": ">=14.0.0"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "homepage": "https://github.com/Marinerer/vite-plugins",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Marinerer/vite-plugins.git"
-  },
-  "author": "Mervin <mengqing723@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Marinerer/vite-plugins/issues"
-  },
-  "peerDependencies": {
-    "vite": ">=2.0.0"
-  },
-  "dependencies": {
-    "@rollup/pluginutils": "^5.1.3",
-    "@types/html-minifier-terser": "^7.0.2",
-    "html-minifier-terser": "^7.2.0"
-  }
+	"name": "vite-plugin-minify-html",
+	"version": "1.0.1",
+	"description": "Minify HTML files.",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "tsup src/index.ts --watch --ignore-watch examples",
+		"build": "tsup index.ts --format esm,cjs --dts --clean"
+	},
+	"keywords": [
+		"vite",
+		"minify-html",
+		"vite-plugin"
+	],
+	"engines": {
+		"node": ">=14.0.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
+	},
+	"homepage": "https://github.com/Marinerer/vite-plugins",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Marinerer/vite-plugins.git"
+	},
+	"author": "Mervin <mengqing723@gmail.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Marinerer/vite-plugins/issues"
+	},
+	"peerDependencies": {
+		"vite": ">=2.0.0"
+	},
+	"dependencies": {
+		"@rollup/pluginutils": "^5.1.3",
+		"@types/html-minifier-terser": "^7.0.2",
+		"html-minifier-terser": "^7.2.0"
+	}
 }

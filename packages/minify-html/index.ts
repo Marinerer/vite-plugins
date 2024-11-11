@@ -1,5 +1,6 @@
 import type { Plugin } from 'vite'
-import { minify as minifyFn, Options as MinifyOptions } from 'html-minifier-terser'
+import { minify as minifyFn } from 'html-minifier-terser'
+import type { Options as MinifyOptions } from 'html-minifier-terser'
 import { createFilter } from '@rollup/pluginutils'
 
 const PLUGIN_NAME = 'vite-plugin-minify-html'
@@ -47,3 +48,5 @@ export default function createMinifyPlugin(minify: boolean | MinifyOptions): Plu
 		},
 	}
 }
+
+export type TerserOptions = MinifyOptions
