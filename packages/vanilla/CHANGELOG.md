@@ -1,5 +1,12 @@
 # vite-plugin-vanilla
 
+## 1.0.0
+
+### Major Changes 🎉
+
+- fix: Fix minify default invalid & compatible with vite@2x
+- perf: Optimize parameter & add mv-file dep
+
 ## 0.1.1
 
 ### Patch Changes 🌟
