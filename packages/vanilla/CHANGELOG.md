@@ -1,5 +1,14 @@
 # vite-plugin-vanilla
 
+## 1.0.1
+
+### Patch Changes 🌟
+
+- perf: Pass request.url & remove html-minifier-terser dep
+
+- Updated dependencies []:
+  - vite-plugin-minify-html@1.0.2
+
 ## 1.0.0
 
 ### Major Changes 🎉

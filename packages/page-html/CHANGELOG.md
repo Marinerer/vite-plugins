@@ -1,5 +1,14 @@
 # vite-plugin-page-html
 
+## 3.1.3
+
+### Patch Changes 🌟
+
+- perf: Enhancement type detection & remove useless dep
+
+- Updated dependencies []:
+  - vite-plugin-minify-html@1.0.2
+
 ## 3.1.2
 
 ### Patch Changes 🌟
