@@ -1,59 +1,51 @@
 import type { HtmlTagDescriptor } from 'vite'
-import type { Options as MinifyOptions } from 'html-minifier-terser'
 import type { Options as EjsOptions } from 'ejs'
+import type { TerserOptions } from 'vite-plugin-minify-html'
 
 /** plugin configurations */
 export interface PluginOptions {
 	/**
 	 * @description page configuration.
 	 * @summary If string, the value is the page path
-	 * @type {string | { path: PageConfig }}
 	 */
 	page?: string | Record<string, string | PageConfig>
 
 	/**
 	 * @description page entry.
-	 * @type {string}
 	 */
 	entry?: string
 
 	/**
 	 * @description page template. as global html
-	 * @type {string}
 	 */
 	template?: string
 
 	/**
 	 * @description page title.
 	 * @summary when using title option, template title tag needs to be <title><%= pageHtmlVitePlugin.title %></title>
-	 * @type {string}
 	 */
 	title?: string
 
 	/**
 	 * @description page data.
 	 * @deprecated use inject.data instead.
-	 * @type {Record<string, any>}
 	 */
 	data?: Record<string, any>
 
 	/**
 	 * @description minify html.
-	 * @type {boolean | MinifyOptions}
 	 * @default true
 	 */
-	minify?: boolean | MinifyOptions
+	minify?: boolean | TerserOptions
 
 	/**
 	 * @description ejs options.
-	 * @type {EjsOptions}
 	 * @see https://github.com/mde/ejs#options
 	 */
 	ejsOptions?: EjsOptions
 
 	/**
 	 * @description inject data and tags to html.
-	 * @type {InjectOptions}
 	 */
 	inject?: InjectOptions
 }
@@ -62,27 +54,23 @@ export interface PluginOptions {
 export interface PageConfig {
 	/**
 	 * @description page entry.
-	 * @type {string}
 	 * @example 'src/main.ts'
 	 */
 	entry: string
 
 	/**
 	 * @description page template
-	 * @type {string}
 	 * @example 'index.html'
 	 */
 	template?: string
 
 	/**
 	 * @description page title.
-	 * @type {string}
 	 */
 	title?: string
 
 	/**
 	 * @description inject data and tags to html.
-	 * @type {InjectOptions}
 	 */
 	inject?: InjectOptions
 }
@@ -91,7 +79,6 @@ export interface PageConfig {
 export interface PageItem extends Required<PageConfig> {
 	path: string
 	template: string
-	minify?: boolean | MinifyOptions
 	ejsOptions?: EjsOptions
 	inject: InjectOptions
 }

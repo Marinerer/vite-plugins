@@ -11,3 +11,5 @@ export default function createPlugin(pluginOptions: PluginOptions = {}): Plugin[
 	}
 	return plugins
 }
+
+export * from './types'

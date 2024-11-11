@@ -1,4 +1,11 @@
-import type { Plugin, ResolvedConfig, ConfigEnv } from 'vite'
+import type {
+	Plugin,
+	ResolvedConfig,
+	IndexHtmlTransformHook,
+	HtmlTagDescriptor,
+	ConfigEnv,
+	Connect,
+} from 'vite'
 import historyFallback from 'connect-history-api-fallback'
 import { PluginOptions, PageItem } from './types'
 import { cleanUrl, cleanPageUrl, errlog, getViteVersion } from './utils/util'
@@ -15,7 +22,7 @@ export function createPagePlugin(pluginOptions: PluginOptions = {}): Plugin {
 	let needRemoveVirtualHtml: string[] = []
 	const pages = createPage(pluginOptions)
 	// 兼容旧版本的transformIndexHtml
-	const transformIndexHtmlHandler = async (html, ctx) => {
+	const transformIndexHtmlHandler: IndexHtmlTransformHook = async (html, ctx) => {
 		let pageUrl = cleanUrl(ctx.originalUrl ?? ctx.path)
 		if (pageUrl.startsWith(viteConfig.base)) {
 			pageUrl = pageUrl.replace(viteConfig.base, '')
@@ -26,7 +33,7 @@ export function createPagePlugin(pluginOptions: PluginOptions = {}): Plugin {
 			html = await renderHtml(html, pageData)
 			return {
 				html,
-				tags: pageData.inject.tags,
+				tags: pageData.inject.tags as HtmlTagDescriptor[],
 			}
 		} else {
 			errlog(`${ctx.originalUrl ?? ctx.path} not found!`)
@@ -73,7 +80,7 @@ export function createPagePlugin(pluginOptions: PluginOptions = {}): Plugin {
 					disableDotRule: undefined,
 					htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
 					rewrites: createRewrites(pages, viteConfig),
-				})
+				}) as Connect.NextHandleFunction
 			)
 		},
 

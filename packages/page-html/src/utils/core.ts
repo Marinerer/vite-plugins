@@ -1,11 +1,12 @@
 import ejs from 'ejs'
 import { resolve } from 'pathe'
 import { ResolvedConfig } from 'vite'
+import type { Rewrite } from 'connect-history-api-fallback'
 import { Pages, PluginOptions, PageItem } from '../types'
 import { errlog, cleanPageUrl } from './util'
 import { bodyInjectRE, scriptRE } from '../const'
 
-type HistoryRewrite = { from: RegExp; to: (context: { parsedUrl: { path: string } }) => string }[]
+// type HistoryRewrite = { from: RegExp; to: (context: { parsedUrl: { path: string } }) => string }[]
 
 export async function compileHtml(
 	ejsOptions: ejs.Options = {},
@@ -53,7 +54,6 @@ export function createPage(options: PluginOptions = {}): Pages {
 		template = 'index.html',
 		title = 'Vite App',
 		data = {},
-		minify = true,
 		ejsOptions = {},
 		inject = {},
 	} = options
@@ -62,10 +62,9 @@ export function createPage(options: PluginOptions = {}): Pages {
 		entry: entry as string,
 		template,
 		title,
-		minify: minify as boolean,
 		ejsOptions,
 		inject: {
-			data: inject.data ?? data, //! 待移除 data
+			data: inject.data ?? data,
 			tags: inject.tags ?? [],
 		},
 	}
@@ -107,11 +106,11 @@ export function createPage(options: PluginOptions = {}): Pages {
 /**
  * 生成重写规则，并过滤代理规则
  */
-function createRewrite(reg: string, page: PageItem, baseUrl: string, proxyKeys: string[]) {
+function createRewrite(reg: string, page: PageItem, baseUrl: string, proxyKeys: string[]): Rewrite {
 	return {
 		from: new RegExp(`^/${reg}$`, 'i'),
 		to: ({ parsedUrl }) => {
-			const pathname = parsedUrl.path
+			const pathname = parsedUrl.path as string
 			const template = resolve(baseUrl, page.template)
 			const isProxyPath = proxyKeys.some((key) => pathname.startsWith(resolve(baseUrl, key)))
 			return isProxyPath ? pathname : template
@@ -122,8 +121,8 @@ function createRewrite(reg: string, page: PageItem, baseUrl: string, proxyKeys: 
 /**
  * 生成重写规则
  */
-export function createRewrites(pages: Pages, viteConfig: ResolvedConfig): HistoryRewrite {
-	const rewrites: HistoryRewrite = []
+export function createRewrites(pages: Pages, viteConfig: ResolvedConfig): Rewrite[] {
+	const rewrites: Rewrite[] = []
 	const indexReg = /(\S+)(\/index\/?)$/
 	const baseUrl = viteConfig.base ?? '/'
 	const proxyKeys = Object.keys(viteConfig.server?.proxy ?? {})
