@@ -26,6 +26,12 @@ export interface PluginOptions {
 	 * @description inject data and tags to html
 	 */
 	inject?: InjectOptions
+
+	/**
+	 * @description replace define
+	 * @default true
+	 */
+	replaceDefine?: Boolean
 }
 
 export interface Pages {

@@ -13,6 +13,7 @@ const defaults: PluginOptions = {
 	minify: true,
 	// transform: ()=>{},
 	inject: { data: {}, tags: [] },
+	replaceDefine: true,
 }
 
 export function createVanillaPlugin(pages: string | string[], options: PluginOptions = {}): Plugin {
@@ -23,7 +24,7 @@ export function createVanillaPlugin(pages: string | string[], options: PluginOpt
 	// 处理 transformIndexHtml 选项
 	const transformIndexHtmlHandler: IndexHtmlTransformHook = async (html, ctx) => {
 		try {
-			if (viteConfig.define) {
+			if (opts.replaceDefine && viteConfig.define) {
 				for (const key in viteConfig.define) {
 					const _value = viteConfig.define[key]
 					// 全局替换，且处理包含特殊字符
