@@ -93,8 +93,8 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       mv-file:
-        specifier: ^1.0.4
-        version: 1.0.4
+        specifier: ^1.0.6
+        version: 1.0.6
       pathe:
         specifier: ^1.1.2
         version: 1.1.2
@@ -1886,8 +1886,8 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: true
 
-  /mv-file@1.0.4:
-    resolution: {integrity: sha512-/nu3KscLVukBggePbzt4tZ+EO/x+XIe0g4lq2XjVzEuNtQUSwAAzFfhn7gYj+d4EAds9WdqtRLtFfYsRrnfkiQ==}
+  /mv-file@1.0.6:
+    resolution: {integrity: sha512-AQQ2ksSvrfqWw94CkcFUbR+yyZrAvYKSs5Q1KUG1yqVwmgJeRQgnpqJw8pCnYVkJ/jSeC8w/KXUR7lXQVGiVUw==}
     engines: {node: '>=16'}
     dependencies:
       '@types/fs-extra': 11.0.4
