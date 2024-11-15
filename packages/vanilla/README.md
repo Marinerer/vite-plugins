@@ -28,9 +28,6 @@ export default defineConfig({
 // `/about/index.html` -> src/pages/about/index.html
 ```
 
-> **Note:**
-> The `'define'` option in the `vite` configuration is statically replaced in the `html`.
-
 ## API
 
 ```js
@@ -45,12 +42,13 @@ The glob pattern of pages.
 
 ### options
 
-| Name      | Type                         | Default | Description                  |
-| --------- | ---------------------------- | ------- | ---------------------------- |
-| base      | `string`                     | `'src'` | The base directory of pages. |
-| minify    | `boolean`                    | `true`  | Whether to minify the HTML.  |
-| transform | `Transform`                  |         | Transform the HTML.          |
-| inject    | `{tags:HtmlTagDescriptor[]}` |         | Inject the HTML Tags.        |
+| Name            | Type                         | Default | Description                           |
+| --------------- | ---------------------------- | ------- | ------------------------------------- |
+| `base`          | `string`                     | `'src'` | The base directory of pages.          |
+| `minify`        | `boolean`                    | `true`  | Whether to minify the HTML.           |
+| `transform`     | `Transform`                  |         | Transform the HTML.                   |
+| `inject`        | `{tags:HtmlTagDescriptor[]}` |         | Inject the HTML Tags.                 |
+| `replaceDefine` | `boolean`                    | `true`  | Static replace `vite.define` in HTML. |
 
 **options.transform**
 
