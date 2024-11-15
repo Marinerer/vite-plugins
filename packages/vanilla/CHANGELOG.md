@@ -1,5 +1,13 @@
 # vite-plugin-vanilla
 
+## 1.1.0
+
+### Minor Changes 🚀
+
+- feat: Add the `replaceDefine` option
+- fix: Upgrade dependency Fixes file move issues
+- docs: Update README
+
 ## 1.0.2
 
 ### Patch Changes 🌟
