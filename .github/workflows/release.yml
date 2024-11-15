@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+env:
+  CI: true
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+
 jobs:
   release:
     # prevents this action from running on forks
