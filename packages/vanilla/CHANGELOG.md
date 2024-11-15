@@ -1,5 +1,11 @@
 # vite-plugin-vanilla
 
+## 1.0.2
+
+### Patch Changes 🌟
+
+- fix: Global replacement `vite.define` option
+
 ## 1.0.1
 
 ### Patch Changes 🌟
