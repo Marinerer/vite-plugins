@@ -26,7 +26,9 @@ export function createVanillaPlugin(pages: string | string[], options: PluginOpt
 			if (viteConfig.define) {
 				for (const key in viteConfig.define) {
 					const _value = viteConfig.define[key]
-					html = html.replace(key, typeof _value === 'string' ? JSON.parse(_value) : _value)
+					// 全局替换，且处理包含特殊字符
+					const keyReg = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')
+					html = html.replace(keyReg, typeof _value === 'string' ? JSON.parse(_value) : _value)
 				}
 			}
 			if (typeof opts.transform === 'function') {
