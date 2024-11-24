@@ -8,11 +8,11 @@
   </p>
 </div>
 
-| name                                                                                                | version                                                                                                                                              | description                               |
-| --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| [vite-plugin-page-html](https://github.com/Marinerer/vite-plugins/tree/main/packages/page-html)     | [![version](https://img.shields.io/npm/v/vite-plugin-page-html?style=flat-square&logo=npm)](https://www.npmjs.com/package/vite-plugin-page-html)     | processing HTML pages (`SPA/MPA`).        |
-| [vite-plugin-vanilla](https://github.com/Marinerer/vite-plugins/tree/main/packages/vanilla)         | [![version](https://img.shields.io/npm/v/vite-plugin-vanilla?style=flat-square&logo=npm)](https://www.npmjs.com/package/vite-plugin-vanilla)         | Vanilla multi-page web development model. |
-| [vite-plugin-minify-html](https://github.com/Marinerer/vite-plugins/tree/main/packages/minify-html) | [![version](https://img.shields.io/npm/v/vite-plugin-minify-html?style=flat-square&logo=npm)](https://www.npmjs.com/package/vite-plugin-minify-html) | minify HTML file.                         |
+| name                                                                                                | version                                                                                                                                              | description                              |
+| --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| [vite-plugin-page-html](https://github.com/Marinerer/vite-plugins/tree/main/packages/page-html)     | [![version](https://img.shields.io/npm/v/vite-plugin-page-html?style=flat-square&logo=npm)](https://www.npmjs.com/package/vite-plugin-page-html)     | processing HTML pages (`SPA/MPA`).       |
+| [vite-plugin-vanilla](https://github.com/Marinerer/vite-plugins/tree/main/packages/vanilla)         | [![version](https://img.shields.io/npm/v/vite-plugin-vanilla?style=flat-square&logo=npm)](https://www.npmjs.com/package/vite-plugin-vanilla)         | Vanilla multi-page web development mode. |
+| [vite-plugin-minify-html](https://github.com/Marinerer/vite-plugins/tree/main/packages/minify-html) | [![version](https://img.shields.io/npm/v/vite-plugin-minify-html?style=flat-square&logo=npm)](https://www.npmjs.com/package/vite-plugin-minify-html) | minify HTML file.                        |
 
 ## [vite-plugin-page-html](https://github.com/Marinerer/vite-plugins/tree/main/packages/page-html)
 
@@ -29,7 +29,7 @@ A simple and flexible Vite plugin for processing HTML pages, integrating multi-p
 
 ## [vite-plugin-vanilla](https://github.com/Marinerer/vite-plugins/tree/main/packages/vanilla)
 
-Vanilla multi-page web development model based on `Vite`.
+Vanilla multi-page web development mode based on `Vite`.
 
 基于 `Vite` 的传统多页面 web 开发模式。
 
