@@ -1,5 +1,11 @@
 # vite-plugin-vanilla
 
+## 1.1.1
+
+### Patch Changes 🌟
+
+- docs: Update README
+
 ## 1.1.0
 
 ### Minor Changes 🚀

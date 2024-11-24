@@ -1,5 +1,11 @@
 # vite-plugin-page-html
 
+## 3.1.4
+
+### Patch Changes 🌟
+
+- docs: Update README
+
 ## 3.1.3
 
 ### Patch Changes 🌟
