@@ -1,6 +1,6 @@
 # vite-plugin-page-html
 
-**English** | [中文](https://github.com/Marinerer/vite-plugins/blob/main/packages/page-html/README.zh_CN.md)
+[English](./README.md) | [中文](./README.zh_CN.md)
 
 A simple and flexible Vite plugin for processing HTML pages, integrating multi-page application (MPA) configuration, EJS template support, and HTML compression. The MPA configuration is similar to the pages option in [vue-cli](<(https://cli.vuejs.org/en/config/#pages)>).
 

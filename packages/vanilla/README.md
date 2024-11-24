@@ -1,8 +1,10 @@
 # vite-plugin-vanilla
 
-Vanilla multi-page web development model based on `Vite`.
+Vanilla multi-page web development mode based on `Vite`.
 
 基于 `Vite` 的传统多页面 web 开发模式。
+
+- [Online Example](https://stackblitz.com/edit/vitejs-vite-ehdof7)
 
 ## Installation
 

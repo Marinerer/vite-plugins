@@ -1,10 +1,8 @@
 # vite-plugin-page-html
 
-**中文** | [English](https://github.com/Marinerer/vite-plugins/blob/main/packages/page-html/README.md)
-
+[English](./README.md) | [中文](./README.zh_CN.md)
 
 一个用于处理 HTML 页面的 `Vite` 插件，集成了多页面配置(`MPA`)`、EJS` 模板支持和 HTML 压缩功能。其多页面配置方式与 `vue-cli` 的[pages选项](https://cli.vuejs.org/en/config/#pages) 类似。
-
 
 ## Features
 
@@ -14,7 +12,6 @@
 - 🗳 支持 `EJS` 模板语法
 - 🗜 提供 `HTML` 文件压缩功能
 - 🔗 方便引入外部资源库 (CDN)
-
 
 ## Why ?
 
@@ -40,16 +37,16 @@ npm install vite-plugin-page-html -D
 > 说明：环境变量(含内建变量)可直接使用。`<%= BASE_URL %>`
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title><%= pageHtmlVitePlugin.title %></title>
-    <link rel="shortcut icon" href="<%= BASE_URL %>favicon.ico" type="image/x-icon">
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<title><%= pageHtmlVitePlugin.title %></title>
+		<link rel="shortcut icon" href="<%= BASE_URL %>favicon.ico" type="image/x-icon" />
+	</head>
+	<body>
+		<div id="app"></div>
+	</body>
 </html>
 ```
 
@@ -65,17 +62,16 @@ npm install vite-plugin-page-html -D
 import PageHtml from 'vite-plugin-page-html'
 
 export default defineConfig({
-  plugins: [
-    // ... plugins
-    PageHtml({
-      page: 'index',
-      template: 'src/index.html',
-      title: 'Vue App'
-    })
-  ]
+	plugins: [
+		// ... plugins
+		PageHtml({
+			page: 'index',
+			template: 'src/index.html',
+			title: 'Vue App',
+		}),
+	],
 })
 ```
-
 
 ### MPA
 
@@ -86,24 +82,24 @@ export default defineConfig({
 import PageHtml from 'vite-plugin-page-html'
 
 export default defineConfig({
-  plugins: [
-    // ... plugins
-    PageHtml({
-      template: 'src/index.html',
-      page: {
-        index: 'src/main.js',
-        about: {
-          entry: 'src/about/main.js',
-          title: 'About Page',
-        },
-        'product/list': {
-          entry: 'src/product/main.js',
-          template: 'src/product/index.html', 
-          title: 'Product list'
-        }
-      }
-    })
-  ]
+	plugins: [
+		// ... plugins
+		PageHtml({
+			template: 'src/index.html',
+			page: {
+				index: 'src/main.js',
+				about: {
+					entry: 'src/about/main.js',
+					title: 'About Page',
+				},
+				'product/list': {
+					entry: 'src/product/main.js',
+					template: 'src/product/index.html',
+					title: 'Product list',
+				},
+			},
+		}),
+	],
 })
 ```
 
@@ -161,30 +157,28 @@ PageHtml({
 
 > 🚨 **WARNING:** 入口文件 `entry` 将会自动添加到 html 内，不需要手动写入，请删除。
 
-
-
 ### InjectOptions
 
 ```typescript
 interface InjectOptions {
-  /**
-   * @see https://cn.vitejs.dev/guide/api-plugin.html#vite-specific-hooks
-   */
-  tags?: HtmlTagDescriptor[],
-  /**
-   * page data. Rendering via `ejs` : `<%= pageHtmlVitePlugin.data %>`
-   */
-  data?: Record<string, any>
+	/**
+	 * @see https://cn.vitejs.dev/guide/api-plugin.html#vite-specific-hooks
+	 */
+	tags?: HtmlTagDescriptor[]
+	/**
+	 * page data. Rendering via `ejs` : `<%= pageHtmlVitePlugin.data %>`
+	 */
+	data?: Record<string, any>
 }
 
 interface HtmlTagDescriptor {
-  tag: string
-  attrs?: Record<string, string>
-  children?: string | HtmlTagDescriptor[]
-  /**
-   * 默认： 'head-prepend'
-   */
-  injectTo?: 'head' | 'body' | 'head-prepend' | 'body-prepend'
+	tag: string
+	attrs?: Record<string, string>
+	children?: string | HtmlTagDescriptor[]
+	/**
+	 * 默认： 'head-prepend'
+	 */
+	injectTo?: 'head' | 'body' | 'head-prepend' | 'body-prepend'
 }
 ```
 
@@ -223,8 +217,6 @@ interface HtmlTagDescriptor {
 | `title`    | -            | 标题，默认为全局`title`                                             |
 | `inject`   | -            | 需要注入 html ejs模板的数据. `InjectOptions` [@see](#InjectOptions) |
 
-
-
 ## Externals
 
 我们在优化项目打包时，一般会将常用的外部库通过外链的方式引入（CDN）。这可以减少构建时间，并且提高生产环境中页面加载速度。
@@ -238,33 +230,29 @@ interface HtmlTagDescriptor {
 ```html
 // index.html
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= pageHtmlVitePlugin.title %></title>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title><%= pageHtmlVitePlugin.title %></title>
 
-    <!-- injectStyle -->
-    <%- pageHtmlVitePlugin.data.injectStyle %>
-    
-    <% for (var i in pageHtmlVitePlugin.data.styles) { %>
-    <link rel="stylesheet" href="<%= pageHtmlVitePlugin.data.styles[i] %>">
-    <% } %>
-  </head>
-  <body>
-    <div id="app"></div>
+		<!-- injectStyle -->
+		<%- pageHtmlVitePlugin.data.injectStyle %> <% for (var i in pageHtmlVitePlugin.data.styles) { %>
+		<link rel="stylesheet" href="<%= pageHtmlVitePlugin.data.styles[i] %>" />
+		<% } %>
+	</head>
+	<body>
+		<div id="app"></div>
 
-    <% if(PROD) { %>
-      <% for (var i in pageHtmlVitePlugin.data.scripts) { %>
-      <script src="<%= pageHtmlVitePlugin.data.scripts[i] %>"></script>
-      <% } %>
-    <% } %>
+		<% if(PROD) { %> <% for (var i in pageHtmlVitePlugin.data.scripts) { %>
+		<script src="<%= pageHtmlVitePlugin.data.scripts[i] %>"></script>
+		<% } %> <% } %>
 
-    <!-- injectScript -->
-    <%- pageHtmlVitePlugin.data.injectScript %>
-  </body>
+		<!-- injectScript -->
+		<%- pageHtmlVitePlugin.data.injectScript %>
+	</body>
 </html>
 ```
 
@@ -276,49 +264,50 @@ import PageHtml from 'vite-plugin-page-html'
 import externalGlobals from 'rollup-plugin-external-globals'
 
 export default defineConfig({
-  // ...
-  plugins: [
-    // ... plugins
-    PageHtml({
-      page: {
-        'index': 'src/main.js',
-        'about': {
-          entry: 'src/about/main.js',
-          title: '关于我们'
-        },
-      },
-      template: 'public/template.html',
-      inject: {
-        data: {
-          styles: [
-            'https://cdn.jsdelivr.net/npm/element-ui@2.15.10/lib/theme-chalk/index.css'
-          ],
-          scripts: [
-            'https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.min.js',
-            'https://cdn.jsdelivr.net/npm/element-ui@2.15.10/lib/index.js',
-            'https://cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js'
-          ],
-          injectStyle: `<script src="./inject.css"></script>`,
-          injectScript: `<script src="./inject.js"></script>`
-        }
-      }
-    })
-  ],
-  build: {
-    rollupOptions: {
-      plugins: [
-        externalGlobals({
-          'vue': 'Vue',
-          'axios': 'axios',
-          'element-ui': 'ELEMENT',
-        })
-      ]
-    }
-  }
+	// ...
+	plugins: [
+		// ... plugins
+		PageHtml({
+			page: {
+				index: 'src/main.js',
+				about: {
+					entry: 'src/about/main.js',
+					title: '关于我们',
+				},
+			},
+			template: 'public/template.html',
+			inject: {
+				data: {
+					styles: ['https://cdn.jsdelivr.net/npm/element-ui@2.15.10/lib/theme-chalk/index.css'],
+					scripts: [
+						'https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.min.js',
+						'https://cdn.jsdelivr.net/npm/element-ui@2.15.10/lib/index.js',
+						'https://cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js',
+					],
+					injectStyle: `<script src="./inject.css"></script>`,
+					injectScript: `<script src="./inject.js"></script>`,
+				},
+			},
+		}),
+	],
+	build: {
+		rollupOptions: {
+			plugins: [
+				externalGlobals({
+					vue: 'Vue',
+					axios: 'axios',
+					'element-ui': 'ELEMENT',
+				}),
+			],
+		},
+	},
 })
 ```
 
-## Thanks
+## License
 
-[vite.js](https://github.com/vitejs/vite) 、 [ejs]() 、[html-minifier-terser](https://github.com/terser/html-minifier-terser) 
+MIT
 
+## Contributing
+
+Contributions are welcome! Please feel free to submit a [Pull Request](https://github.com/Marinerer/vite-plugins/pulls).
