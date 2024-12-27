@@ -3,19 +3,29 @@ import type { TerserOptions } from 'vite-plugin-minify-html'
 
 export interface PluginOptions {
 	/**
+	 * @description HTML file pattern
+	 */
+	include?: string | string[]
+
+	/**
+	 * @description Exclude HTML file pattern
+	 */
+	exclude?: string[]
+
+	/**
 	 * @description Base path removed in build.
 	 * @default 'src'
 	 */
 	base?: string
 
 	/**
-	 * @description minify html
+	 * @description Minify HTML
 	 * @default true
 	 */
 	minify?: boolean | TerserOptions
 
 	/**
-	 * @description transform html
+	 * @description Transform HTML
 	 */
 	transform?: (
 		html: string,
@@ -23,12 +33,12 @@ export interface PluginOptions {
 	) => Promise<string> | string
 
 	/**
-	 * @description inject data and tags to html
+	 * @description Inject data and tags to HTML
 	 */
 	inject?: InjectOptions
 
 	/**
-	 * @description replace define
+	 * @description Static replace `vite.define` in HTML.
 	 * @default true
 	 */
 	replaceDefine?: Boolean

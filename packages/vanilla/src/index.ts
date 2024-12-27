@@ -3,12 +3,9 @@ import { PluginOptions } from './types'
 import createMinifyPlugin from 'vite-plugin-minify-html'
 import { createVanillaPlugin } from './vanillaPlugin'
 
-export default function createPlugin(
-	pages: string | string[],
-	options: PluginOptions = {}
-): Plugin[] {
+export default function createPlugin(options: string | string[] | PluginOptions = {}): Plugin[] {
 	const opts = Object.assign({ minify: true }, options)
-	const plugins = [createVanillaPlugin(pages, opts)]
+	const plugins = [createVanillaPlugin(opts)]
 	if (opts.minify) {
 		plugins.push(createMinifyPlugin(opts.minify))
 	}
