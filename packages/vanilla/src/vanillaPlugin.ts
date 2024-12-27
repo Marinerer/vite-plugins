@@ -8,17 +8,22 @@ import { PluginOptions, Pages } from './types'
 import { moveFile } from 'mv-file'
 
 const defaults: PluginOptions = {
+	include: 'src/**/*.html',
+	exclude: [],
 	base: 'src',
-	// index: 'index.html',
 	minify: true,
 	// transform: ()=>{},
 	inject: { data: {}, tags: [] },
 	replaceDefine: true,
 }
 
-export function createVanillaPlugin(pages: string | string[], options: PluginOptions = {}): Plugin {
+export function createVanillaPlugin(options: string | string[] | PluginOptions = {}): Plugin {
 	const htmlPages: Pages = {}
 	let viteConfig: ResolvedConfig
+
+	if (typeof options === 'string' || Array.isArray(options)) {
+		options = { include: options }
+	}
 	const opts = Object.assign({}, defaults, options) as Required<PluginOptions>
 
 	// 处理 transformIndexHtml 选项
@@ -53,32 +58,29 @@ export function createVanillaPlugin(pages: string | string[], options: PluginOpt
 		},
 
 		config(config) {
-			const patterns = Array.isArray(pages) ? pages : [pages]
 			const input: { [key: string]: string } = {}
 
-			patterns.forEach((pattern) => {
-				const files = glob.sync(pattern)
+			const files = glob.sync(opts.include, { ignore: opts.exclude })
 
-				files.forEach((file) => {
-					// 过滤非 html 文件
-					if (!htmlRE.test(file)) return
-					// 获取绝对路径
-					const absolutePath = path.resolve(file)
-					// 获取相对于 base 目录的路径
-					const relativePath = path.relative(
-						path.join(config?.root ?? process.cwd(), opts.base),
-						absolutePath
-					)
-					const fileUrl = cleanPageUrl(relativePath)
+			files.forEach((file) => {
+				// 过滤非 html 文件
+				if (!htmlRE.test(file)) return
+				// 获取绝对路径
+				const absolutePath = path.resolve(file)
+				// 获取相对于 base 目录的路径
+				const relativePath = path.relative(
+					path.join(config?.root ?? process.cwd(), opts.base),
+					absolutePath
+				)
+				const fileUrl = cleanPageUrl(relativePath)
 
-					input[fileUrl] = absolutePath
-					htmlPages[fileUrl] = {
-						file, //文件路径
-						path: fileUrl, //访问路径
-						filePath: absolutePath, // 绝对路径
-						output: relativePath, // 输出路径
-					}
-				})
+				input[fileUrl] = absolutePath
+				htmlPages[fileUrl] = {
+					file, //文件路径
+					path: fileUrl, //访问路径
+					filePath: absolutePath, // 绝对路径
+					output: relativePath, // 输出路径
+				}
 			})
 
 			return {

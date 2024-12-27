@@ -4,7 +4,7 @@ Vanilla multi-page web development mode based on `Vite`.
 
 基于 `Vite` 的传统多页面 web 开发模式。
 
-- [Online Example](https://stackblitz.com/edit/vitejs-vite-ehdof7)
+- [Online Example](https://stackblitz.com/edit/vite-plugin-vanilla-example)
 
 ## Installation
 
@@ -20,7 +20,8 @@ import vanilla from 'vite-plugin-vanilla'
 
 export default defineConfig({
 	plugins: [
-		vanilla('src/pages/**/*.html', {
+		vanilla({
+			include: 'src/pages/**/*.html',
 			base: 'src/pages',
 		}),
 	],
@@ -33,19 +34,15 @@ export default defineConfig({
 ## API
 
 ```js
-vanilla(pagePatterns, options)
+vanilla(options: string | string[] | object)
 ```
-
-### pagePatterns
-
-- Type: `string | string[]`
-
-The glob pattern of pages.
 
 ### options
 
 | Name            | Type                         | Default | Description                           |
 | --------------- | ---------------------------- | ------- | ------------------------------------- |
+| `include`       | `string\|string[]`           |         | The pattern of pages.                 |
+| `exclude`       | `string[]`                   | `[]`    | The pattern of pages to exclude.      |
 | `base`          | `string`                     | `'src'` | The base directory of pages.          |
 | `minify`        | `boolean`                    | `true`  | Whether to minify the HTML.           |
 | `transform`     | `Transform`                  |         | Transform the HTML.                   |
