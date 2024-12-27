@@ -1,5 +1,11 @@
 # vite-plugin-vanilla
 
+## 2.0.0
+
+### Breaking Changes 🚨
+
+- feat: Refactor PluginOptions configurations & Support exclude pattern (#6)
+
 ## 1.1.1
 
 ### Patch Changes 🌟
