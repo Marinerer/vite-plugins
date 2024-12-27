@@ -8,7 +8,6 @@
 		"vite",
 		"plugin"
 	],
-	"packageManager": "pnpm@8.15.5",
 	"scripts": {
 		"clean": "rimraf -rf packages/*/dist",
 		"build": "pnpm -r run build",
