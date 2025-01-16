@@ -1,5 +1,12 @@
 # vite-plugin-vanilla
 
+## 2.1.0
+
+### Minor Changes 🌟
+
+- feat: Support for hot updates when create files
+- feat: Support configure page file suffixes
+
 ## 2.0.1
 
 ### Patch Changes 🌟
