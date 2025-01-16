@@ -24,6 +24,7 @@ export function createVanillaPlugin(options: PluginOptions = {}): Plugin {
 	const opts = Object.assign({}, defaults, options) as Required<PluginOptions>
 	const pageRE = getPageRE(opts.suffix)
 	const pagePathRE = getPageRE(opts.suffix, false)
+	const basePathResolve = path.resolve(opts.base)
 
 	// 处理 transformIndexHtml 选项
 	const transformIndexHtmlHandler: IndexHtmlTransformHook = async (html, ctx) => {
@@ -140,13 +141,23 @@ export function createVanillaPlugin(options: PluginOptions = {}): Plugin {
 				watcher.add(filePath)
 			})
 
-			// 处理热更新
-			watcher.on('change', (_file) => {
+			function handleChangeFile(_file: string) {
 				server.ws.send({
 					type: 'full-reload',
 					path: '*',
 				})
-			})
+			}
+			function handleAddFile(file: string) {
+				const _path = path.resolve(file)
+				if (_path.includes(basePathResolve) && pageRE.test(_path)) {
+					server.restart()
+				}
+			}
+
+			// 处理热更新
+			watcher.on('change', handleChangeFile)
+			watcher.on('unlink', handleChangeFile)
+			watcher.on('add', handleAddFile)
 		},
 
 		transformIndexHtml:
