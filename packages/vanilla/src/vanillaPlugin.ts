@@ -2,7 +2,7 @@ import type { Plugin, ResolvedConfig, IndexHtmlTransformHook } from 'vite'
 import fs from 'fs/promises'
 import path from 'pathe'
 import glob from 'fast-glob'
-import { PLUGIN_NAME, htmlRE, cleanPageUrl, cleanUrl, errlog, getViteVersion } from './utils'
+import { PLUGIN_NAME, getPageRE, cleanPageUrl, cleanUrl, errlog, getViteVersion } from './utils'
 import { PluginOptions, Pages } from './types'
 // import { moveFile } from './mv'
 import { moveFile } from 'mv-file'
@@ -10,6 +10,7 @@ import { moveFile } from 'mv-file'
 const defaults: PluginOptions = {
 	include: 'src/**/*.html',
 	exclude: [],
+	suffix: 'html',
 	base: 'src',
 	minify: true,
 	// transform: ()=>{},
@@ -21,6 +22,8 @@ export function createVanillaPlugin(options: PluginOptions = {}): Plugin {
 	const htmlPages: Pages = {}
 	let viteConfig: ResolvedConfig
 	const opts = Object.assign({}, defaults, options) as Required<PluginOptions>
+	const pageRE = getPageRE(opts.suffix)
+	const pagePathRE = getPageRE(opts.suffix, false)
 
 	// 处理 transformIndexHtml 选项
 	const transformIndexHtmlHandler: IndexHtmlTransformHook = async (html, ctx) => {
@@ -60,7 +63,7 @@ export function createVanillaPlugin(options: PluginOptions = {}): Plugin {
 
 			files.forEach((file) => {
 				// 过滤非 html 文件
-				if (!htmlRE.test(file)) return
+				if (!pageRE.test(file)) return
 				// 获取绝对路径
 				const absolutePath = path.resolve(file)
 				// 获取相对于 base 目录的路径
@@ -68,7 +71,7 @@ export function createVanillaPlugin(options: PluginOptions = {}): Plugin {
 					path.join(config?.root ?? process.cwd(), opts.base),
 					absolutePath
 				)
-				const fileUrl = cleanPageUrl(relativePath)
+				const fileUrl = cleanPageUrl(relativePath, pageRE)
 
 				input[fileUrl] = absolutePath
 				htmlPages[fileUrl] = {
@@ -100,15 +103,14 @@ export function createVanillaPlugin(options: PluginOptions = {}): Plugin {
 				}
 
 				// 移除开头的 / 和结尾的 .html
-				url = cleanPageUrl(url)
+				url = cleanPageUrl(url, pageRE)
 
 				// 处理根路径
 				if (url === '') {
 					url = 'index'
 				}
 
-				const _htmlReg = /\.htm(l)?/i
-				const pageData = _htmlReg.test(req.url || '')
+				const pageData = pagePathRE.test(req.url || '')
 					? htmlPages[url]
 					: htmlPages[url] || htmlPages[`${url}/index`]
 				// 查找匹配的页面

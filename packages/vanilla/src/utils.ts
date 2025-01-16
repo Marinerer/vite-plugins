@@ -5,6 +5,19 @@ export const PLUGIN_NAME = 'vite-plugin-vanilla'
 export const htmlRE = /\.htm(l)?$/i
 
 /**
+ * 获取入口文件正则
+ * @example /\.(htm|html)$/i
+ *
+ * @param suffix 后缀
+ * @param end 是否以后缀结尾
+ * @returns
+ */
+export const getPageRE = (suffix: string | string[], end = true) => {
+	const suffixStr = Array.isArray(suffix) ? suffix.join('|') : suffix
+	return new RegExp(`\\.(${suffixStr})${end ? '$' : ''}`, 'i')
+}
+
+/**
  * 错误日志
  * @param args - 要打印的参数
  */
@@ -38,6 +51,7 @@ export function cleanUrl(url: string): string {
  * @param path - 要清理的 URL 路径
  * @returns 清理后的 URL 路径
  */
-export function cleanPageUrl(path: string): string {
-	return path.replace(/(^\/)|(\/$)/g, '').replace(htmlRE, '')
+export function cleanPageUrl(path: string, reg?: RegExp): string {
+	const result = path.replace(/(^\/)|(\/$)/g, '')
+	return reg ? result.replace(reg, '') : result
 }

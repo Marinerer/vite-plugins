@@ -13,6 +13,12 @@ export interface PluginOptions {
 	exclude?: string[]
 
 	/**
+	 * @description page file suffix
+	 * @default 'html'
+	 */
+	suffix?: string | string[]
+
+	/**
 	 * @description Base path removed in build.
 	 * @default 'src'
 	 */
