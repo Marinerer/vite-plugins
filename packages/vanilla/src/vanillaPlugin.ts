@@ -17,13 +17,9 @@ const defaults: PluginOptions = {
 	replaceDefine: true,
 }
 
-export function createVanillaPlugin(options: string | string[] | PluginOptions = {}): Plugin {
+export function createVanillaPlugin(options: PluginOptions = {}): Plugin {
 	const htmlPages: Pages = {}
 	let viteConfig: ResolvedConfig
-
-	if (typeof options === 'string' || Array.isArray(options)) {
-		options = { include: options }
-	}
 	const opts = Object.assign({}, defaults, options) as Required<PluginOptions>
 
 	// 处理 transformIndexHtml 选项
