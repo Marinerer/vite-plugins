@@ -1,5 +1,11 @@
 # vite-plugin-vanilla
 
+## 2.0.1
+
+### Patch Changes 🌟
+
+- fix: Error if the argument type is String or arrray
+
 ## 2.0.0
 
 ### Breaking Changes 🚨
