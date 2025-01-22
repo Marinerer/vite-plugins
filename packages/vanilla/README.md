@@ -41,9 +41,10 @@ vanilla(options: string | string[] | object)
 
 | Name            | Type                         | Default | Description                           |
 | --------------- | ---------------------------- | ------- | ------------------------------------- |
-| `include`       | `string\|string[]`           |         | The pattern of pages.                 |
+| `include`       | `string \| string[]`         |         | The pattern of pages.                 |
 | `exclude`       | `string[]`                   | `[]`    | The pattern of pages to exclude.      |
 | `base`          | `string`                     | `'src'` | The base directory of pages.          |
+| `suffix`        | `string \| string[]`         | `html`  | The suffix of page file.              |
 | `minify`        | `boolean`                    | `true`  | Whether to minify the HTML.           |
 | `transform`     | `Transform`                  |         | Transform the HTML.                   |
 | `inject`        | `{tags:HtmlTagDescriptor[]}` |         | Inject the HTML Tags.                 |
