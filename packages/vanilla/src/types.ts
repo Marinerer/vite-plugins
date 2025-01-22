@@ -4,6 +4,7 @@ import type { TerserOptions } from 'vite-plugin-minify-html'
 export interface PluginOptions {
 	/**
 	 * @description HTML file pattern
+	 * @default 'src\/**\/*.html'
 	 */
 	include?: string | string[]
 
