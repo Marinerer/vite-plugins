@@ -95,6 +95,10 @@ export function createPage(options: PluginOptions = {}): Pages {
 			pages[pageUrl] = {
 				...defaults,
 				...pageItem,
+				inject: {
+					...defaults.inject,
+					...(pageItem.inject ?? {}),
+				},
 				path: pageUrl,
 			} as PageItem
 		})
