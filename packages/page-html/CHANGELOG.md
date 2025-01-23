@@ -1,5 +1,11 @@
 # vite-plugin-page-html
 
+## 3.1.5
+
+### Patch Changes 🌟
+
+- fix: Merge inject.data & inject.tags (#8)
+
 ## 3.1.4
 
 ### Patch Changes 🌟

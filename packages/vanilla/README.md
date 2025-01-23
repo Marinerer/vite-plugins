@@ -34,21 +34,21 @@ export default defineConfig({
 ## API
 
 ```js
-vanilla(options: string | string[] | object)
+vanilla(options: string | string[] | IOptions)
 ```
 
 ### options
 
-| Name            | Type                         | Default | Description                           |
-| --------------- | ---------------------------- | ------- | ------------------------------------- |
-| `include`       | `string \| string[]`         |         | The pattern of pages.                 |
-| `exclude`       | `string[]`                   | `[]`    | The pattern of pages to exclude.      |
-| `base`          | `string`                     | `'src'` | The base directory of pages.          |
-| `suffix`        | `string \| string[]`         | `html`  | The suffix of page file.              |
-| `minify`        | `boolean`                    | `true`  | Whether to minify the HTML.           |
-| `transform`     | `Transform`                  |         | Transform the HTML.                   |
-| `inject`        | `{tags:HtmlTagDescriptor[]}` |         | Inject the HTML Tags.                 |
-| `replaceDefine` | `boolean`                    | `true`  | Static replace `vite.define` in HTML. |
+| Name            | Type                         | Default         | Description                           |
+| --------------- | ---------------------------- | --------------- | ------------------------------------- |
+| `include`       | `string \| string[]`         | `src/**/*.html` | The pattern of pages.                 |
+| `exclude`       | `string[]`                   | `[]`            | The pattern of pages to exclude.      |
+| `base`          | `string`                     | `'src'`         | The base directory of pages.          |
+| `suffix`        | `string \| string[]`         | `'html'`        | The suffix of page file.              |
+| `minify`        | `boolean`                    | `true`          | Whether to minify the HTML.           |
+| `transform`     | `Transform`                  |                 | Transform the HTML.                   |
+| `inject`        | `{tags:HtmlTagDescriptor[]}` |                 | Inject the HTML Tags.                 |
+| `replaceDefine` | `boolean`                    | `true`          | Static replace `vite.define` in HTML. |
 
 **options.transform**
 
