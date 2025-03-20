@@ -48,6 +48,11 @@ export interface PluginOptions {
 	 * @description inject data and tags to html.
 	 */
 	inject?: InjectOptions
+
+	/**
+	 * @description Whitelist, where no redirection is performed when matched to these paths
+	 */
+	rewriteWhitelist?: RegExp
 }
 
 /** page configurations */
