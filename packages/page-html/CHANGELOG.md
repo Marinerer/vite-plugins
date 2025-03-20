@@ -1,5 +1,11 @@
 # vite-plugin-page-html
 
+## 3.2.0
+
+### Minor Changes 🚀
+
+- feat: Add path rewrite whitelist (#9)
+
 ## 3.1.5
 
 ### Patch Changes 🌟
