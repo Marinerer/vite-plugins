@@ -125,7 +125,7 @@ function createRewrite(reg: string, page: PageItem, baseUrl: string, proxyKeys: 
 /**
  * 生成重写规则
  */
-export function createRewrites(pages: Pages, viteConfig: ResolvedConfig): Rewrite[] {
+export function createRewrites(pages: Pages, viteConfig: ResolvedConfig, options: PluginOptions = {}): Rewrite[] {
 	const rewrites: Rewrite[] = []
 	const indexReg = /(\S+)(\/index\/?)$/
 	const baseUrl = viteConfig.base ?? '/'
@@ -144,7 +144,18 @@ export function createRewrites(pages: Pages, viteConfig: ResolvedConfig): Rewrit
 			rewrites.push(createRewrite(`${_path}(/)?`, page, baseUrl, proxyKeys))
 		}
 	})
-	// 3. 支持 `/` 请求
+	// 3. 白名单，匹配到这些路径时不进行重定向
+	rewrites.push({
+    from: /^\/(__unocss|__devtools__)\/$/,
+    to: ({ parsedUrl }) => parsedUrl.pathname as string
+  })
+	if (options.rewriteWhitelist instanceof RegExp) {
+		rewrites.push({
+			from: options.rewriteWhitelist,
+			to: ({ parsedUrl }) => parsedUrl.pathname as string
+		})
+	}
+	// 4. 支持 `/` 请求
 	rewrites.push(createRewrite('', pages['index'] ?? {}, baseUrl, proxyKeys))
 
 	return rewrites

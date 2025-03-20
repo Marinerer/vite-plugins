@@ -79,7 +79,7 @@ export function createPagePlugin(pluginOptions: PluginOptions = {}): Plugin {
 					verbose: !!process.env.DEBUG && process.env.DEBUG !== 'false',
 					disableDotRule: undefined,
 					htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
-					rewrites: createRewrites(pages, viteConfig),
+					rewrites: createRewrites(pages, viteConfig, pluginOptions),
 				}) as Connect.NextHandleFunction
 			)
 		},
