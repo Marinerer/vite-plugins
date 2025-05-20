@@ -1,5 +1,11 @@
 # vite-plugin-page-html
 
+## 3.2.1
+
+### Patch Changes 🌟
+
+- refactor: Optimize the whitelist regular expression matching (#10)
+
 ## 3.2.0
 
 ### Minor Changes 🚀

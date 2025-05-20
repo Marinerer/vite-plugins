@@ -1,6 +1,6 @@
 {
 	"name": "vite-plugin-page-html",
-	"version": "3.2.0",
+	"version": "3.2.1",
 	"description": "A simple and flexible Vite plugin for processing HTML pages, integrating multi-page application (MPA) configuration, EJS template support, and HTML compression.",
 	"type": "module",
 	"main": "./dist/index.js",
