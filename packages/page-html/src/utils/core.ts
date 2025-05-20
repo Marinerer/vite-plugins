@@ -144,9 +144,9 @@ export function createRewrites(pages: Pages, viteConfig: ResolvedConfig, options
 			rewrites.push(createRewrite(`${_path}(/)?`, page, baseUrl, proxyKeys))
 		}
 	})
-	// 3. 白名单，匹配到这些路径时不进行重定向
+	// 3. 白名单，匹配到这些路径时不进行重定向, .e.g  /__unocss/, /__devtools__/, __vitest__
 	rewrites.push({
-    from: /^\/(__unocss|__devtools__)\/$/,
+		from: /^\/__\w+\/$/,
     to: ({ parsedUrl }) => parsedUrl.pathname as string
   })
 	if (options.rewriteWhitelist instanceof RegExp) {
