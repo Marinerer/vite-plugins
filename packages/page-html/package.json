@@ -21,7 +21,7 @@
 		"dist"
 	],
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "vitest",
 		"dev": "tsup src/index.ts --watch --ignore-watch examples",
 		"build": "tsup src/index.ts --format=esm,cjs --dts --clean"
 	},
@@ -57,11 +57,8 @@
 		"url": "https://github.com/Marinerer/vite-plugins/issues"
 	},
 	"dependencies": {
-		"@types/connect-history-api-fallback": "^1.5.4",
-		"@types/ejs": "^3.1.5",
-		"@types/fs-extra": "^11.0.4",
 		"connect-history-api-fallback": "^2.0.0",
-		"diy-log": "^2.5.1",
+		"diy-log": "^2.5.2",
 		"ejs": "^3.1.10",
 		"fs-extra": "^11.2.0",
 		"pathe": "^1.1.2",
@@ -69,5 +66,10 @@
 	},
 	"peerDependencies": {
 		"vite": ">=2.0.0"
+	},
+	"devDependencies": {
+		"@types/connect-history-api-fallback": "^1.5.4",
+		"@types/ejs": "^3.1.5",
+		"@types/fs-extra": "^11.0.4"
 	}
 }

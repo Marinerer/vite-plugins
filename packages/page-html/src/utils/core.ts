@@ -53,10 +53,23 @@ export function createPage(options: PluginOptions = {}): Pages {
 		entry,
 		template = 'index.html',
 		title = 'Vite App',
-		data = {},
+		data, // Keep data here to check if it's used
 		ejsOptions = {},
 		inject = {},
 	} = options
+
+	let finalInjectData = inject.data;
+	if (data !== undefined) {
+		if (inject.data === undefined) {
+			finalInjectData = data;
+			console.warn('[vite-plugin-page-html] WARN: The `data` option at the plugin root or page level is deprecated. Please use `inject.data` instead.');
+		} else {
+			// If both are present, inject.data is prioritized by default logic later,
+			// but we can warn if the user explicitly provided the deprecated one.
+			console.warn('[vite-plugin-page-html] WARN: The `data` option is deprecated. `inject.data` is being used.');
+		}
+	}
+
 
 	const defaults: Omit<PageItem, 'path'> = {
 		entry: entry as string,
@@ -64,7 +77,7 @@ export function createPage(options: PluginOptions = {}): Pages {
 		title,
 		ejsOptions,
 		inject: {
-			data: inject.data ?? data,
+			data: finalInjectData ?? {}, // Use the resolved finalInjectData
 			tags: inject.tags ?? [],
 		},
 	}
@@ -88,16 +101,34 @@ export function createPage(options: PluginOptions = {}): Pages {
 				return
 			}
 
+			let pageSpecificInjectData = typeof pageItem !== 'string' && pageItem.inject?.data;
+			// Handle deprecated 'data' at the page level
+			if (typeof pageItem !== 'string' && pageItem.data !== undefined) {
+				if (pageItem.inject?.data === undefined) {
+					pageSpecificInjectData = pageItem.data;
+					console.warn(`[vite-plugin-page-html] WARN: The \`data\` option for page "${name}" is deprecated. Please use \`inject.data\` instead.`);
+				} else {
+					console.warn(`[vite-plugin-page-html] WARN: The \`data\` option for page "${name}" is deprecated. \`inject.data\` is being used.`);
+				}
+			}
+
+
 			if (typeof pageItem === 'string') {
 				pageItem = { entry: pageItem }
 			}
 
+			// Merge inject objects carefully
+			const defaultInject = { ...(defaults.inject ?? {}) };
+			const pageItemInject = { ...(typeof pageItem !== 'string' ? (pageItem.inject ?? {}) : {}) };
+			
+			const mergedInjectData = pageSpecificInjectData ?? defaultInject.data;
+
 			pages[pageUrl] = {
-				...defaults,
-				...pageItem,
-				inject: {
-					...defaults.inject,
-					...(pageItem.inject ?? {}),
+				...defaults, // Apply global defaults first
+				...pageItem, // Then page-specific options (could override entry, title, template)
+				inject: { // Carefully merge inject property
+					tags: pageItemInject.tags ?? defaultInject.tags,
+					data: mergedInjectData, // Use the data determined by deprecation logic
 				},
 				path: pageUrl,
 			} as PageItem
@@ -149,9 +180,15 @@ export function createRewrites(pages: Pages, viteConfig: ResolvedConfig, options
 		from: /^\/__\w+\/$/,
     to: ({ parsedUrl }) => parsedUrl.pathname as string
   })
-	if (options.rewriteWhitelist instanceof RegExp) {
+	// if (options.rewriteWhitelist instanceof RegExp) { // Deprecated
+	// 	rewrites.push({
+	// 		from: options.rewriteWhitelist,
+	// 		to: ({ parsedUrl }) => parsedUrl.pathname as string
+	// 	})
+	// }
+	if (options.historyApiFallback?.ignorePatterns instanceof RegExp) {
 		rewrites.push({
-			from: options.rewriteWhitelist,
+			from: options.historyApiFallback.ignorePatterns,
 			to: ({ parsedUrl }) => parsedUrl.pathname as string
 		})
 	}

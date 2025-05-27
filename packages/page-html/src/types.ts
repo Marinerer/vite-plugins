@@ -52,7 +52,16 @@ export interface PluginOptions {
 	/**
 	 * @description Whitelist, where no redirection is performed when matched to these paths
 	 */
-	rewriteWhitelist?: RegExp
+	// rewriteWhitelist?: RegExp // Deprecated
+
+	historyApiFallback?: {
+		/**
+		 * @description RegExp patterns for paths that should be ignored by the history API fallback mechanism.
+		 * No redirection will be performed for these paths.
+		 * Example: /^\/(api|__some_custom_path__)\//
+		 */
+		ignorePatterns?: RegExp;
+	};
 }
 
 /** page configurations */

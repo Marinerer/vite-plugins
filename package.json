@@ -16,7 +16,8 @@
 		"build:vanilla": "pnpm --filter vite-plugin-vanilla run build",
 		"changeset": "changeset",
 		"changeset:version": "changeset version",
-		"changeset:release": "changeset publish --registry https://registry.npmjs.org"
+		"changeset:release": "changeset publish --registry https://registry.npmjs.org",
+		"test": "pnpm -r test"
 	},
 	"publishConfig": {
 		"access": "public",
@@ -53,6 +54,7 @@
 		"rimraf": "^6.0.1",
 		"tsup": "^8.3.5",
 		"typescript": "^5.6.3",
-		"vite": "^5.4.10"
+		"vite": "^5.4.10",
+		"vitest": "^1.3.1"
 	}
 }

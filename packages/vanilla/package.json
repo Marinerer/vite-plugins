@@ -21,7 +21,7 @@
 		"dist"
 	],
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "vitest",
 		"dev": "tsup src/index.ts --watch --ignore-watch examples",
 		"build": "tsup src/index.ts --format=esm,cjs --dts --clean"
 	},
@@ -44,7 +44,7 @@
 		"url": "https://github.com/Marinerer/vite-plugins/issues"
 	},
 	"dependencies": {
-		"diy-log": "^2.5.1",
+		"diy-log": "^2.5.2",
 		"fast-glob": "^3.3.2",
 		"mv-file": "^1.0.6",
 		"pathe": "^1.1.2",
@@ -52,5 +52,6 @@
 	},
 	"peerDependencies": {
 		"vite": ">=2.0.0"
-	}
+	},
+	"devDependencies": {}
 }
