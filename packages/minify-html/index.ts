@@ -32,7 +32,7 @@ export default function createMinifyPlugin(minify: boolean | MinifyOptions): Plu
 	return {
 		name: PLUGIN_NAME,
 		enforce: 'post' as const,
-		// apply: 'build' as const,
+		apply: 'build' as const,
 		async generateBundle(_, outputBundle) {
 			if (minify) {
 				for (const bundle of Object.values(outputBundle)) {

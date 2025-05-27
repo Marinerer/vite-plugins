@@ -151,8 +151,34 @@ PageHtml({
 | `minify`     | `false`       | Compressed file. `MinifyOptions` [@See](https://github.com/terser/html-minifier-terser#options-quick-reference) |
 | `ejsOptions` | -             | `ejs` options, [@See](https://github.com/mde/ejs#options)                                                       |
 | `inject`     | -             | Data injected into HTML. (`global`) `InjectOptions` [@see](#InjectOptions)                                      |
+| `rewriteWhitelist` | -       | A `RegExp` to specify paths that should not be rewritten by `connect-history-api-fallback`. Useful for Vite's internal paths like `/__vite__/` or custom API endpoints that should not serve an HTML page. |
 
 > 🚨 **WARNING:** The `entry` file has been written to html, you don't need to write it again.
+
+### `rewriteWhitelist` Example
+
+If you have specific paths that should not be handled by the SPA/MPA fallback mechanism (e.g., API endpoints served by Vite's dev server, or special Vite paths), you can use `rewriteWhitelist`.
+
+```js
+// vite.config.js
+import PageHtml from 'vite-plugin-page-html'
+
+export default defineConfig({
+  plugins: [
+    PageHtml({
+      // ... other options
+      rewriteWhitelist: /^\/(api|__some_custom_path__)\//,
+    }),
+  ],
+  server: {
+    proxy: {
+      // Proxied API calls are usually not affected by rewrites,
+      // but this is for non-proxied paths you want to exclude.
+    }
+  }
+})
+```
+This configuration will prevent any URL starting with `/api/` or `/__some_custom_path__/` from being rewritten to an HTML page.
 
 ### InjectOptions
 
