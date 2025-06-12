@@ -238,20 +238,21 @@ interface HtmlTagDescriptor {
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title><%= pageHtmlVitePlugin.title %></title>
 
-		<!-- injectStyle -->
-		<%- pageHtmlVitePlugin.data.injectStyle %> <% for (var i in pageHtmlVitePlugin.data.styles) { %>
+		<!-- inject style files -->
+		<% for (var i in pageHtmlVitePlugin.data.styles) { %>
 		<link rel="stylesheet" href="<%= pageHtmlVitePlugin.data.styles[i] %>" />
 		<% } %>
 	</head>
 	<body>
 		<div id="app"></div>
+		
+		<!--// raw html -->
+		<%- pageHtmlVitePlugin.data.injectScript %>
 
+		<!-- inject script files -->
 		<% if(PROD) { %> <% for (var i in pageHtmlVitePlugin.data.scripts) { %>
 		<script src="<%= pageHtmlVitePlugin.data.scripts[i] %>"></script>
 		<% } %> <% } %>
-
-		<!-- injectScript -->
-		<%- pageHtmlVitePlugin.data.injectScript %>
 	</body>
 </html>
 ```
@@ -284,8 +285,8 @@ export default defineConfig({
 						'https://cdn.jsdelivr.net/npm/element-ui@2.15.10/lib/index.js',
 						'https://cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js',
 					],
-					injectStyle: `<script src="./inject.css"></script>`,
-					injectScript: `<script src="./inject.js"></script>`,
+          injectStyle: `<link href="./inject.css"/>`,
+          injectScript: `<script src="./inject.js"></script>`
 				},
 			},
 		}),
