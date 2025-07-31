@@ -1,5 +1,11 @@
 # vite-plugin-page-html
 
+## 3.2.2
+
+### Patch Changes 🌟
+
+- fix: User-defined rewrite whitelist rules are advanced (#11)
+
 ## 3.2.1
 
 ### Patch Changes 🌟
