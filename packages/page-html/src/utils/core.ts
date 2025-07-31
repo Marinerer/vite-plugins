@@ -144,17 +144,18 @@ export function createRewrites(pages: Pages, viteConfig: ResolvedConfig, options
 			rewrites.push(createRewrite(`${_path}(/)?`, page, baseUrl, proxyKeys))
 		}
 	})
-	// 3. 白名单，匹配到这些路径时不进行重定向, .e.g  /__unocss/, /__devtools__/, __vitest__
-	rewrites.push({
-		from: /^\/__\w+\/$/,
-    to: ({ parsedUrl }) => parsedUrl.pathname as string
-  })
+	// 3. 白名单，匹配到这些路径时不进行重定向
 	if (options.rewriteWhitelist instanceof RegExp) {
 		rewrites.push({
 			from: options.rewriteWhitelist,
 			to: ({ parsedUrl }) => parsedUrl.pathname as string
 		})
 	}
+	//过滤掉一些路径，比如 /__unocss/, /__devtools__/, __vitest__
+	rewrites.push({
+		from: /^\/__\w+\/$/,
+    to: ({ parsedUrl }) => parsedUrl.pathname as string
+  })
 	// 4. 支持 `/` 请求
 	rewrites.push(createRewrite('', pages['index'] ?? {}, baseUrl, proxyKeys))
 
