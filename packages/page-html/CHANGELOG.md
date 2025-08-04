@@ -1,5 +1,11 @@
 # vite-plugin-page-html
 
+## 3.3.0
+
+### Minor Changes 🚀
+
+- feat: Improve URL rewriting and resource handling (#12)
+
 ## 3.2.2
 
 ### Patch Changes 🌟
