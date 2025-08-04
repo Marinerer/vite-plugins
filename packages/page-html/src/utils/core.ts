@@ -1,6 +1,6 @@
 import ejs from 'ejs'
 import { resolve } from 'pathe'
-import { ResolvedConfig } from 'vite'
+import { ResolvedConfig, normalizePath } from 'vite'
 import type { Rewrite } from 'connect-history-api-fallback'
 import { Pages, PluginOptions, PageItem } from '../types'
 import { errlog, cleanPageUrl } from './util'
@@ -13,7 +13,7 @@ export async function compileHtml(
 	extendData: Record<string, any> = {},
 	viteConfig: ResolvedConfig
 ): Promise<(html: string, data?: PageItem) => Promise<string>> {
-	return async function (html: string, data?: PageItem): Promise<string> {
+	return async function (html: string, data: PageItem = {} as PageItem): Promise<string> {
 		try {
 			const ejsData = {
 				...extendData,
@@ -22,6 +22,7 @@ export async function compileHtml(
 					entry: data?.entry,
 					data: data?.inject.data,
 				},
+				...data,
 			}
 			let result = await ejs.render(html, ejsData, ejsOptions)
 			if (data?.entry) {
@@ -31,10 +32,7 @@ export async function compileHtml(
 					.replace(scriptRE, '')
 					.replace(
 						bodyInjectRE,
-						`<script type="module" src="${resolve(
-							viteConfig.base ?? '/',
-							data.entry
-						)}"></script>\n</body>`
+						`<script type="module" src="${normalizePath(data.entry)}"></script>\n</body>`
 					)
 			}
 			return result
@@ -110,12 +108,28 @@ export function createPage(options: PluginOptions = {}): Pages {
 /**
  * 生成重写规则，并过滤代理规则
  */
-function createRewrite(reg: string, page: PageItem, baseUrl: string, proxyKeys: string[]): Rewrite {
+function createRewire(
+	reg: string | RegExp,
+	page: PageItem,
+	baseUrl: string,
+	proxyKeys: string[]
+): Rewrite {
+	const from = typeof reg === 'string' ? new RegExp(`^/${reg}*`) : reg
 	return {
-		from: new RegExp(`^/${reg}$`, 'i'),
+		from,
 		to: ({ parsedUrl }) => {
 			const pathname = parsedUrl.path as string
+			const excludeBaseUrl = pathname.replace(baseUrl, '/') // 去掉baseUrl
 			const template = resolve(baseUrl, page.template)
+
+			// 静态资源
+			if (excludeBaseUrl.startsWith('/static')) {
+				return excludeBaseUrl
+			}
+			// 首页
+			if (excludeBaseUrl === '/') {
+				return template
+			}
 			const isProxyPath = proxyKeys.some((key) => pathname.startsWith(resolve(baseUrl, key)))
 			return isProxyPath ? pathname : template
 		},
@@ -125,39 +139,34 @@ function createRewrite(reg: string, page: PageItem, baseUrl: string, proxyKeys: 
 /**
  * 生成重写规则
  */
-export function createRewrites(pages: Pages, viteConfig: ResolvedConfig, options: PluginOptions = {}): Rewrite[] {
+export function createRewrites(
+	pages: Pages,
+	viteConfig: ResolvedConfig,
+	options: PluginOptions = {}
+): Rewrite[] {
 	const rewrites: Rewrite[] = []
-	const indexReg = /(\S+)(\/index\/?)$/
 	const baseUrl = viteConfig.base ?? '/'
 	const proxyKeys = Object.keys(viteConfig.server?.proxy ?? {})
 
+	// 1. 匹配页面，支持 `xxx`, `xxx/xxx`, `xxx[?/xxx].html`, `xxx[?/index.html]` 访问
 	Object.entries(pages).forEach(([_, page]) => {
-		// 1. 支持 `xxx`, `xxx/xxx`, `xxx[?/xxx].html`, `xxx[?/index.html]` 请求
-		// `^/${page.path}((/)|(\\.html?)|(/index\\.html?))?$`
-		rewrites.push(
-			createRewrite(`${page.path}((/)|(\\.html?)|(/index\\.html?))?`, page, baseUrl, proxyKeys)
-		)
-		// 2. 支持 `xxx[?/xxx]/index` 通过 `xxx[?/xxx]` 请求
-		if (indexReg.test(page.path)) {
-			const _path = page.path.replace(indexReg, '$1')
-			// `^/${_path}(/)?$`
-			rewrites.push(createRewrite(`${_path}(/)?`, page, baseUrl, proxyKeys))
-		}
+		const reg = new RegExp(`${page.path}(\\/|\\.html|\\/index\\.html)?$`, 'i')
+		rewrites.push(createRewire(reg, page, baseUrl, proxyKeys))
 	})
-	// 3. 白名单，匹配到这些路径时不进行重定向
+	// 2. 白名单，匹配到这些路径时不进行重定向
 	if (options.rewriteWhitelist instanceof RegExp) {
 		rewrites.push({
 			from: options.rewriteWhitelist,
-			to: ({ parsedUrl }) => parsedUrl.pathname as string
+			to: ({ parsedUrl }) => parsedUrl.pathname as string,
 		})
 	}
-	//过滤掉一些路径，比如 /__unocss/, /__devtools__/, __vitest__
+	//3. 过滤掉一些路径，比如 /__unocss/, /__devtools__/, __vitest__
 	rewrites.push({
 		from: /^\/__\w+\/$/,
-    to: ({ parsedUrl }) => parsedUrl.pathname as string
-  })
+		to: ({ parsedUrl }) => parsedUrl.pathname as string,
+	})
 	// 4. 支持 `/` 请求
-	rewrites.push(createRewrite('', pages['index'] ?? {}, baseUrl, proxyKeys))
+	rewrites.push(createRewire('', pages['index'] ?? {}, baseUrl, proxyKeys))
 
 	return rewrites
 }
