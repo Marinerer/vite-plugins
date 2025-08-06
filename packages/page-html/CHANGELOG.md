@@ -1,5 +1,11 @@
 # vite-plugin-page-html
 
+## 3.3.1
+
+### Patch Changes 🌟
+
+- fix: rewrite-whitelist
+
 ## 3.3.0
 
 ### Minor Changes 🚀
