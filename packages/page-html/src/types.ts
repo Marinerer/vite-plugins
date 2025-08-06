@@ -52,7 +52,7 @@ export interface PluginOptions {
 	/**
 	 * @description Whitelist, where no redirection is performed when matched to these paths
 	 */
-	rewriteWhitelist?: RegExp
+	rewriteWhitelist?: string | RegExp | (RegExp|string)[]
 }
 
 /** page configurations */

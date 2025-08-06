@@ -112,7 +112,8 @@ function createRewire(
 	reg: string | RegExp,
 	page: PageItem,
 	baseUrl: string,
-	proxyKeys: string[]
+	proxyKeys: string[],
+	whitelist?: RegExp[]
 ): Rewrite {
 	const from = typeof reg === 'string' ? new RegExp(`^/${reg}*`) : reg
 	return {
@@ -130,10 +131,26 @@ function createRewire(
 			if (excludeBaseUrl === '/') {
 				return template
 			}
+			// 白名单
+			if (whitelist?.some((reg) => reg.test(excludeBaseUrl))) {
+				return pathname
+			}
 			const isProxyPath = proxyKeys.some((key) => pathname.startsWith(resolve(baseUrl, key)))
 			return isProxyPath ? pathname : template
 		},
 	}
+}
+
+function createWhitelist(rewrites?: string | RegExp | (RegExp | string)[]): RegExp[] {
+	//默认暴力过滤掉一些路径，比如 `/__unocss/, /__devtools__/, __vitest__`
+	const result = [/^\/__\w+\/$/]
+	if (rewrites) {
+		rewrites = Array.isArray(rewrites) ? rewrites : [rewrites]
+		for (const reg of rewrites) {
+			result.push(typeof reg === 'string' ? new RegExp(reg) : reg)
+		}
+	}
+	return result
 }
 
 /**
@@ -147,26 +164,15 @@ export function createRewrites(
 	const rewrites: Rewrite[] = []
 	const baseUrl = viteConfig.base ?? '/'
 	const proxyKeys = Object.keys(viteConfig.server?.proxy ?? {})
+	const whitelist = createWhitelist(options.rewriteWhitelist)
 
 	// 1. 匹配页面，支持 `xxx`, `xxx/xxx`, `xxx[?/xxx].html`, `xxx[?/index.html]` 访问
 	Object.entries(pages).forEach(([_, page]) => {
 		const reg = new RegExp(`${page.path}(\\/|\\.html|\\/index\\.html)?$`, 'i')
-		rewrites.push(createRewire(reg, page, baseUrl, proxyKeys))
+		rewrites.push(createRewire(reg, page, baseUrl, proxyKeys, whitelist))
 	})
-	// 2. 白名单，匹配到这些路径时不进行重定向
-	if (options.rewriteWhitelist instanceof RegExp) {
-		rewrites.push({
-			from: options.rewriteWhitelist,
-			to: ({ parsedUrl }) => parsedUrl.pathname as string,
-		})
-	}
-	//3. 过滤掉一些路径，比如 /__unocss/, /__devtools__/, __vitest__
-	rewrites.push({
-		from: /^\/__\w+\/$/,
-		to: ({ parsedUrl }) => parsedUrl.pathname as string,
-	})
-	// 4. 支持 `/` 请求
-	rewrites.push(createRewire('', pages['index'] ?? {}, baseUrl, proxyKeys))
+	// 2. 支持 `/` 请求
+	rewrites.push(createRewire('', pages['index'] ?? {}, baseUrl, proxyKeys, whitelist))
 
 	return rewrites
 }
